@@ -1,3 +1,13 @@
+/*
+=================================================================================================
+Filename: mmclib.h
+Desciption: 
+Author: $Author$
+Last changed by:    $Author$
+Last changed date:    $Date$
+ID:            $Id$
+=================================================================================================
+*/
 #ifndef _MMCLIB_DEF
 #define _MMCLIB_DEF
 #include <windows.h>
@@ -30,8 +40,8 @@ typedef struct _MmCAPI{
 } MmCAPI;
 
 
-#define MMC_OK 0;
-#define MMC_MEMORY_ERROR 0x1000;
-#define MMC_WRONG_ENCODERS_FOLDER 0x0100;
-#define MMC_WRONG_FILTERS_FOLDER  0x0101;
+#define MMC_OK 0
+#define MMC_MEMORY_ERROR 0x1000
+#define MMC_WRONG_ENCODERS_FOLDER 0x0100
+#define MMC_WRONG_FILTERS_FOLDER  0x0101
 #endif
