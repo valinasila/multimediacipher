@@ -1,7 +1,7 @@
 /*
 =================================================================================================
 Filename: filter.h
-Desciption: 
+Desciption: The default API for a filter
 Author: $Author$
 Last changed by:    $Author$
 Last changed date:    $Date$
