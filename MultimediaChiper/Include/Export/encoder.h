@@ -1,7 +1,7 @@
 /*
 =================================================================================================
 Filename: encoder.h
-Desciption: 
+Desciption: The default API for an encoder
 Author: $Author$
 Last changed by:    $Author$
 Last changed date:    $Date$

@@ -1,7 +1,7 @@
 /*
 =================================================================================================
 Filename: mmc.h
-Desciption: 
+Desciption:  aditional functions and define, not needed for export are added here
 Author: $Author$
 Last changed by:    $Author$
 Last changed date:    $Date$

@@ -1,7 +1,7 @@
 /*
 =================================================================================================
 Filename: mmclib.h
-Desciption: 
+Desciption: Exported API for mmclib
 Author: $Author$
 Last changed by:    $Author$
 Last changed date:    $Date$

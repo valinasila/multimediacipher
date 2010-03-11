@@ -1,11 +1,11 @@
 /*
 =================================================================================================
 Filename: main.c
-Desciption: 
-Author: $Author$
-Last changed by:    $Author$
-Last changed date:    $Date$
-ID:            $Id$
+Desciption:				Main file for mmclib
+Author:					$Author$
+Last changed by:		$Author$
+Last changed date:		$Date$
+ID:						$Id$
 =================================================================================================
 */
 #include "mmc.h"
