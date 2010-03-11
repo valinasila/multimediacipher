@@ -1,0 +1,56 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mmclib", "mmclib\mmclib.vcproj", "{B64EDB63-E82C-42B4-993F-CDE61C397C49}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "filters", "filters", "{FE67577A-1A9D-44DB-BE8C-2FD692D5BB38}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "encoders", "encoders", "{61E6B743-5F71-4297-8F82-A9C7B751C8DF}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tester", "tester\tester.vcproj", "{569EEA64-D4BC-4220-8A7E-6803661318CC}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B64EDB63-E82C-42B4-993F-CDE61C397C49} = {B64EDB63-E82C-42B4-993F-CDE61C397C49}
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Export", "Export", "{9532CE17-C89B-49EB-8086-D0BEAEEE1E0E}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\Include\Export\encoder.h = ..\..\Include\Export\encoder.h
+		..\..\Include\Export\filter.h = ..\..\Include\Export\filter.h
+		..\..\Include\Export\mmclib.h = ..\..\Include\Export\mmclib.h
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "genericEncoder", "encoders\genericEncoder\genericEncoder.vcproj", "{E357E182-A68A-42BD-8733-1733584FBD4E}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "genericFilter", "filters\genericFilter\genericFilter.vcproj", "{3A638A04-FD0F-4D87-BF4C-D08D92DC7B38}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B64EDB63-E82C-42B4-993F-CDE61C397C49}.Debug|Win32.ActiveCfg = Debug|Win32
+		{B64EDB63-E82C-42B4-993F-CDE61C397C49}.Debug|Win32.Build.0 = Debug|Win32
+		{B64EDB63-E82C-42B4-993F-CDE61C397C49}.Release|Win32.ActiveCfg = Release|Win32
+		{B64EDB63-E82C-42B4-993F-CDE61C397C49}.Release|Win32.Build.0 = Release|Win32
+		{569EEA64-D4BC-4220-8A7E-6803661318CC}.Debug|Win32.ActiveCfg = Debug|Win32
+		{569EEA64-D4BC-4220-8A7E-6803661318CC}.Debug|Win32.Build.0 = Debug|Win32
+		{569EEA64-D4BC-4220-8A7E-6803661318CC}.Release|Win32.ActiveCfg = Release|Win32
+		{569EEA64-D4BC-4220-8A7E-6803661318CC}.Release|Win32.Build.0 = Release|Win32
+		{E357E182-A68A-42BD-8733-1733584FBD4E}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E357E182-A68A-42BD-8733-1733584FBD4E}.Debug|Win32.Build.0 = Debug|Win32
+		{E357E182-A68A-42BD-8733-1733584FBD4E}.Release|Win32.ActiveCfg = Release|Win32
+		{E357E182-A68A-42BD-8733-1733584FBD4E}.Release|Win32.Build.0 = Release|Win32
+		{3A638A04-FD0F-4D87-BF4C-D08D92DC7B38}.Debug|Win32.ActiveCfg = Debug|Win32
+		{3A638A04-FD0F-4D87-BF4C-D08D92DC7B38}.Debug|Win32.Build.0 = Debug|Win32
+		{3A638A04-FD0F-4D87-BF4C-D08D92DC7B38}.Release|Win32.ActiveCfg = Release|Win32
+		{3A638A04-FD0F-4D87-BF4C-D08D92DC7B38}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{3A638A04-FD0F-4D87-BF4C-D08D92DC7B38} = {FE67577A-1A9D-44DB-BE8C-2FD692D5BB38}
+		{E357E182-A68A-42BD-8733-1733584FBD4E} = {61E6B743-5F71-4297-8F82-A9C7B751C8DF}
+	EndGlobalSection
+EndGlobal
