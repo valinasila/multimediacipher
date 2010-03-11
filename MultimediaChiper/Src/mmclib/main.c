@@ -1,3 +1,13 @@
+/*
+=================================================================================================
+Filename: main.c
+Desciption: 
+Author: $Author$
+Last changed by:    $Author$
+Last changed date:    $Date$
+ID:            $Id$
+=================================================================================================
+*/
 #include "mmc.h"
 
 int Init()
@@ -72,6 +82,21 @@ int ChangeFiltersFolder(LPCWSTR path)
 	
 	return ScanFilters();
 }
+int ReleaseDllList(HMODULE** dllList,int* size)
+{
+	int i;
+	if(size > 0)
+	{
+		for(i = 0;  i < *size; i++)
+		{
+			FreeLibrary(*(*dllList + i));
+		}
+		free(*dllList);
+		*dllList = NULL;
+		*size = 0;
+	}
+	return MMC_OK;
+}
 int ScanEncoders()
 {
 	int i,bRunning = 1;
@@ -80,7 +105,7 @@ int ScanEncoders()
 	LPWSTR dllPath = (LPWSTR) malloc(sizeof(WCHAR) * MAX_PATH);
 	WIN32_FIND_DATA wfd;
 
-	ReleaseDllList(&dllEncoders , dllEncodersSize);
+	ReleaseDllList(&dllEncoders , &dllEncodersSize);
 
 	do{
 		if(hFile == NULL)
@@ -111,19 +136,5 @@ int ScanEncoders()
 }
 int ScanFilters()
 {
-	return MMC_OK;
-}
-int ReleaseDllList(HMODULE** dllList,int& size)
-{
-	if(size > 0)
-	{
-		for(i = 0;  i < size; i++)
-		{
-			FreeLibrary(*(*dllList + i));
-		}
-		free(dllList);
-		*dllList = NULL;
-		size = 0;
-	}
 	return MMC_OK;
 }

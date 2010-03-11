@@ -1,3 +1,13 @@
+/*
+=================================================================================================
+Filename: main.c
+Desciption: 
+Author: $Author$
+Last changed by:    $Author$
+Last changed date:    $Date$
+ID:            $Id$
+=================================================================================================
+*/
 #include "mmclib.h"
 MmCAPI api_mmc;
 HMODULE hDll;

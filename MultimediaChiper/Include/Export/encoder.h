@@ -1,3 +1,13 @@
+/*
+=================================================================================================
+Filename: encoder.h
+Desciption: 
+Author: $Author$
+Last changed by:    $Author$
+Last changed date:    $Date$
+ID:            $Id$
+=================================================================================================
+*/
 #ifndef _ENCODER_DEF
 #define _ENCODER_DEF
 
