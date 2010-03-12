@@ -136,7 +136,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="..\..\..\..\Bin\$(ConfigurationName)\PlayGround\encoders\$(ProjectName).dll"
+				OutputFile="..\..\..\..\Bin\VS9\$(ConfigurationName)\PlayGround\encoders\$(ProjectName).dll"
 				LinkIncremental="1"
 				ModuleDefinitionFile="genericEncoder.def"
 				GenerateDebugInformation="true"

@@ -92,8 +92,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="..\..\..\Bin\$(ConfigurationName)\$(ProjectName)"
-			IntermediateDirectory="..\..\..\Bin/Intermediate\$(ConfigurationName)\$(ProjectName)"
+			OutputDirectory="..\..\..\Bin\VS9\$(ConfigurationName)\$(ProjectName)"
+			IntermediateDirectory="..\..\..\Bin\VS9\Intermediate\$(ConfigurationName)\$(ProjectName)"
 			ConfigurationType="2"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
@@ -136,7 +136,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="..\..\..\Bin\$(ConfigurationName)\PlayGround\$(ProjectName).dll"
+				OutputFile="..\..\..\Bin\VS9\$(ConfigurationName)\PlayGround\$(ProjectName).dll"
 				LinkIncremental="1"
 				ModuleDefinitionFile="mmclib.def"
 				GenerateDebugInformation="true"

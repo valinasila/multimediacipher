@@ -105,21 +105,18 @@ int ReleaseDllList(HMODULE** dllList,int* size)
 }
 int ScanEncoders()
 {
-	int i,bRunning = 1;
-	LPWSTR dir;
-	DWORD q;
+	int i,bRunning = 1;	
 	HANDLE hFile = NULL;
 	HMODULE tmpDll;
 	LPWSTR dllPath = (LPWSTR) malloc(sizeof(WCHAR) * MAX_PATH);
 	WIN32_FIND_DATA wfd;
 
 	ReleaseDllList(&dllEncoders , &dllEncodersSize);
-	dir = (LPWSTR) malloc(MAX_PATH);
-	q = GetCurrentDirectory(MAX_PATH,dir);
+	
 	do{
 		if(hFile == NULL)
 		{
-			hFile = FindFirstFile(L".\\encoders\\*.dll"/*encodersDir*/,&wfd);
+			hFile = FindFirstFile(encodersDir,&wfd);
 			if(INVALID_HANDLE_VALUE == hFile)
 			{
 				DWORD d = GetLastError();
