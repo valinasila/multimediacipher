@@ -92,8 +92,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="..\..\..\..\Bin\$(ConfigurationName)\filters\$(ProjectName)"
-			IntermediateDirectory="..\..\..\..\Bin\Intermediate\$(ConfigurationName)\filters\$(ProjectName)"
+			OutputDirectory="..\..\..\..\Bin\VS9\$(ConfigurationName)\filters\$(ProjectName)"
+			IntermediateDirectory="..\..\..\..\Bin\VS9\Intermediate\$(ConfigurationName)\filters\$(ProjectName)"
 			ConfigurationType="2"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
@@ -136,7 +136,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="..\..\..\..\Bin\$(ConfigurationName)\PlayGround\filters\$(ProjectName).dll"
+				OutputFile="..\..\..\..\Bin\VS9\$(ConfigurationName)\PlayGround\filters\$(ProjectName).dll"
 				LinkIncremental="1"
 				ModuleDefinitionFile="genericFilter.def"
 				GenerateDebugInformation="true"
