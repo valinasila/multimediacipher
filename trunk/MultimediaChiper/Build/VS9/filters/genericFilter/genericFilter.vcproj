@@ -181,7 +181,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\main.c"
+				RelativePath="..\..\..\..\Src\filters\genericFilter\main.c"
 				>
 			</File>
 		</Filter>

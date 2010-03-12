@@ -2,6 +2,10 @@
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mmclib", "mmclib\mmclib.vcproj", "{B64EDB63-E82C-42B4-993F-CDE61C397C49}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3A638A04-FD0F-4D87-BF4C-D08D92DC7B38} = {3A638A04-FD0F-4D87-BF4C-D08D92DC7B38}
+		{E357E182-A68A-42BD-8733-1733584FBD4E} = {E357E182-A68A-42BD-8733-1733584FBD4E}
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "filters", "filters", "{FE67577A-1A9D-44DB-BE8C-2FD692D5BB38}"
 EndProject

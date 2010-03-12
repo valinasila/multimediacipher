@@ -50,12 +50,12 @@ int ChangeEncodersFolder(LPCWSTR path)
 
 	if(	path[wcslen(path) - 1] == L'\\' )	
 	{
-		memcpy(encodersDir + wcslen(path) ,L".*dll",11);
+		memcpy(encodersDir + wcslen(path) ,L"*.dll",11);
 		encodersDir[wcslen(path)+ 5] = L'\0';
 	}
 	else
 	{
-		memcpy(encodersDir + wcslen(path) ,L"\\.*dll",12);		
+		memcpy(encodersDir + wcslen(path) ,L"\\*.dll",12);		
 		encodersDir[wcslen(path) + 6] = L'\0';
 	}
 	
@@ -77,12 +77,12 @@ int ChangeFiltersFolder(LPCWSTR path)
 
 	if(	path[wcslen(path) - 1] == L'\\' )	
 	{
-		memcpy(filtersDir + wcslen(path) ,L".*dll",11);
+		memcpy(filtersDir + wcslen(path) ,L"*.dll",11);
 		filtersDir[wcslen(path)+ 5] = L'\0';
 	}
 	else
 	{
-		memcpy(filtersDir + wcslen(path) ,L"\\.*dll",12);		
+		memcpy(filtersDir + wcslen(path) ,L"\\*.dll",12);		
 		filtersDir[wcslen(path) + 6] = L'\0';
 	}
 	
@@ -106,19 +106,23 @@ int ReleaseDllList(HMODULE** dllList,int* size)
 int ScanEncoders()
 {
 	int i,bRunning = 1;
+	LPWSTR dir;
+	DWORD q;
 	HANDLE hFile = NULL;
 	HMODULE tmpDll;
 	LPWSTR dllPath = (LPWSTR) malloc(sizeof(WCHAR) * MAX_PATH);
 	WIN32_FIND_DATA wfd;
 
 	ReleaseDllList(&dllEncoders , &dllEncodersSize);
-
+	dir = (LPWSTR) malloc(MAX_PATH);
+	q = GetCurrentDirectory(MAX_PATH,dir);
 	do{
 		if(hFile == NULL)
 		{
-			hFile = FindFirstFile(encodersDir,&wfd);
+			hFile = FindFirstFile(L".\\encoders\\*.dll"/*encodersDir*/,&wfd);
 			if(INVALID_HANDLE_VALUE == hFile)
 			{
+				DWORD d = GetLastError();
 				free(dllPath);
 				return MMC_WRONG_ENCODERS_FOLDER;
 			}
