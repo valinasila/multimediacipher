@@ -18,8 +18,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="..\..\..\Bin\$(ConfigurationName)\$(ProjectName)"
-			IntermediateDirectory="..\..\..\Bin\Intermediate\$(ConfigurationName)\$(ProjectName)"
+			OutputDirectory="..\..\..\Bin\VS9\$(ConfigurationName)\$(ProjectName)"
+			IntermediateDirectory="..\..\..\Bin\VS9\Intermediate\$(ConfigurationName)\$(ProjectName)"
 			ConfigurationType="1"
 			CharacterSet="1"
 			>
@@ -61,7 +61,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="..\..\..\Bin\$(ConfigurationName)\PlayGround\$(ProjectName).exe"
+				OutputFile="..\..\..\Bin\VS9\$(ConfigurationName)\PlayGround\$(ProjectName).exe"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="1"

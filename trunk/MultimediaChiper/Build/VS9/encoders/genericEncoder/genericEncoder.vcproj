@@ -18,8 +18,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="..\..\..\..\Bin\$(ConfigurationName)\encoders\$(ProjectName)"
-			IntermediateDirectory="..\..\..\..\Bin\Intermediate\$(ConfigurationName)\encoders\$(ProjectName)"
+			OutputDirectory="..\..\..\..\Bin\VS9\$(ConfigurationName)\encoders\$(ProjectName)"
+			IntermediateDirectory="..\..\..\..\Bin\VS9\Intermediate\$(ConfigurationName)\encoders\$(ProjectName)"
 			ConfigurationType="2"
 			CharacterSet="1"
 			>
@@ -61,7 +61,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="..\..\..\..\Bin\$(ConfigurationName)\PlayGround\encoders\$(ProjectName).dll"
+				OutputFile="..\..\..\..\Bin\VS9\$(ConfigurationName)\PlayGround\encoders\$(ProjectName).dll"
 				LinkIncremental="2"
 				ModuleDefinitionFile="genericEncoder.def"
 				GenerateDebugInformation="true"
@@ -92,8 +92,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="..\..\..\..\Bin\$(ConfigurationName)\encoders\$(ProjectName)"
-			IntermediateDirectory="..\..\..\..\Bin\Intermediate\$(ConfigurationName)\encoders\$(ProjectName)"
+			OutputDirectory="..\..\..\..\Bin\VS9\$(ConfigurationName)\encoders\$(ProjectName)"
+			IntermediateDirectory="..\..\..\..\Bin\VS9\Intermediate\$(ConfigurationName)\encoders\$(ProjectName)"
 			ConfigurationType="2"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
