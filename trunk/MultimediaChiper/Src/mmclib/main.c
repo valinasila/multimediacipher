@@ -31,28 +31,32 @@ int UnInit()
 	if(filtersDir)
 		free(filtersDir);
 
+	ReleaseDllList(&dllEncoders , &dllEncodersSize);
+	ReleaseDllList(&dllFilters , &dllFiltersSize);
 	return MMC_OK;
 }
 int ChangeEncodersFolder(LPCWSTR path)
 {
 	if(encodersDir)
 		free(encodersDir);
-
 	if(	path[wcslen(path) - 1] == L'\\' )
-		encodersDir = (LPWSTR) malloc( sizeof(WCHAR) * (wcslen(path) + 1) );
+		encodersDir = (LPWSTR) malloc( sizeof(WCHAR) * (wcslen(path) + 6) );
 	else
-		encodersDir = (LPWSTR) malloc( sizeof(WCHAR) * (wcslen(path) + 2) );
+		encodersDir = (LPWSTR) malloc( sizeof(WCHAR) * (wcslen(path) + 7) );
 
 	if(encodersDir == NULL)
 		return MMC_MEMORY_ERROR;
 	memcpy(encodersDir , path , sizeof(WCHAR) * wcslen(path));
 
 	if(	path[wcslen(path) - 1] == L'\\' )	
-		encodersDir[wcslen(path)] = L'\0';
+	{
+		memcpy(encodersDir + wcslen(path) ,L".*dll",11);
+		encodersDir[wcslen(path)+ 5] = L'\0';
+	}
 	else
 	{
-		encodersDir[wcslen(path)] = L'\\';
-		encodersDir[wcslen(path) + 1] = L'\0';
+		memcpy(encodersDir + wcslen(path) ,L"\\.*dll",12);		
+		encodersDir[wcslen(path) + 6] = L'\0';
 	}
 	
 	return ScanEncoders();
@@ -62,22 +66,24 @@ int ChangeFiltersFolder(LPCWSTR path)
 {
 	if(filtersDir)
 		free(filtersDir);
-
 	if(	path[wcslen(path) - 1] == L'\\' )
-		filtersDir = (LPWSTR) malloc( sizeof(WCHAR) * (wcslen(path) + 1) );
+		filtersDir = (LPWSTR) malloc( sizeof(WCHAR) * (wcslen(path) + 6) );
 	else
-		filtersDir = (LPWSTR) malloc( sizeof(WCHAR) * (wcslen(path) + 2) );
+		filtersDir = (LPWSTR) malloc( sizeof(WCHAR) * (wcslen(path) + 7) );
 
 	if(filtersDir == NULL)
 		return MMC_MEMORY_ERROR;
-	memcpy(filtersDir  ,path , sizeof(WCHAR) * wcslen(path));
+	memcpy(filtersDir , path , sizeof(WCHAR) * wcslen(path));
 
 	if(	path[wcslen(path) - 1] == L'\\' )	
-		filtersDir[wcslen(path)] = L'\0';
+	{
+		memcpy(filtersDir + wcslen(path) ,L".*dll",11);
+		filtersDir[wcslen(path)+ 5] = L'\0';
+	}
 	else
 	{
-		filtersDir[wcslen(path)] = L'\\';
-		filtersDir[wcslen(path) + 1] = L'\0';
+		memcpy(filtersDir + wcslen(path) ,L"\\.*dll",12);		
+		filtersDir[wcslen(path) + 6] = L'\0';
 	}
 	
 	return ScanFilters();
