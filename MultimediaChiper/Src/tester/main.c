@@ -21,9 +21,10 @@ void InitAPI()
 }
 int main()
 {
+	int ret;
 	InitAPI();
-	api_mmc.m_lpfnInit();
-	
+	ret = api_mmc.m_lpfnInit();
+	printf("%d",ret);
 	api_mmc.m_lpfnUnInit();
 	FreeLibrary(hDll);	
 	system("pause");
