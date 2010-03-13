@@ -1,7 +1,0 @@
-LIBRARY	"mmclib"
-
-EXPORTS
-	Init						@1
-	UnInit						@2
-	ChangeEncodersFolder		@3
-	ChangeFiltersFolder			@4

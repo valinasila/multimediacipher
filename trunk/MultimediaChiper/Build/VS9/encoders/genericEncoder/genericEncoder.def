@@ -1,7 +1,0 @@
-LIBRARY	"genericEncoder"
-
-EXPORTS
-	IsEncoder				@1
-	Init					@2	
-	GetEncoder              @3
-	UnInit					@4
