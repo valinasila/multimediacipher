@@ -20,12 +20,15 @@ ID:            $Id$
 
 #include <windows.h>
 
-typedef struct _encoderStruct{
-	char* name;
-	void* data;
-} EncoderStruct;
-typedef EncoderStruct* EncoderStructPtr;
-
+typedef void* Encoder;
+typedef struct _encoderStruct EncoderStruct, * EncoderStructPtr;
+struct _encoderStruct {
+	EncoderStructPtr	m_pThis;
+	LPWSTR				m_szName;
+	LPWSTR				m_szVersion;	
+	LPWSTR				m_szType;	
+	unsigned long long	m_ulUid;
+};
 typedef enum _encoderRet {
 	ENC_RET_OK					= 0,
 	ENC_RET_UnknownError		= -500,
@@ -39,8 +42,8 @@ typedef EncoderRet (*isEncoderFn)();
 API_EXPORT EncoderRet Init();
 typedef EncoderRet (*initEncoderFn)();
 
-API_EXPORT EncoderStructPtr GetEncoder();
-typedef EncoderStructPtr (*getEncoderFn) ();
+API_EXPORT Encoder GetEncoder();
+typedef Encoder (*getEncoderFn) ();
 
 API_EXPORT EncoderRet UnInit();
 typedef EncoderRet (*uninitEncoderFn) ();
