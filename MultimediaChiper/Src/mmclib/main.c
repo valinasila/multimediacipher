@@ -107,8 +107,7 @@ int ScanEncoders()
 {
 	int i,bRunning = 1;	
 	HANDLE hFile = NULL;
-	HMODULE tmpDll;
-	LPWSTR dllPath = (LPWSTR) malloc(sizeof(WCHAR) * MAX_PATH);
+	HMODULE tmpDll;	
 	WIN32_FIND_DATA wfd;
 
 	ReleaseDllList(&dllEncoders , &dllEncodersSize);
@@ -119,8 +118,7 @@ int ScanEncoders()
 			hFile = FindFirstFile(encodersDir,&wfd);
 			if(INVALID_HANDLE_VALUE == hFile)
 			{
-				DWORD d = GetLastError();
-				free(dllPath);
+				DWORD d = GetLastError();				
 				return MMC_WRONG_ENCODERS_FOLDER;
 			}
 		}
@@ -131,14 +129,14 @@ int ScanEncoders()
 		}
 		if(  wcscmp(wfd.cFileName,L".") != 0 && wcscmp(wfd.cFileName,L"..") != 0 )
 		{
-			memcpy(dllPath , encodersDir , sizeof(WCHAR) * wcslen(encodersDir) );
+			//memcpy(dllPath , encodersDir , sizeof(WCHAR) * wcslen(encodersDir) );
 			/*memcpy(dllPath + wcslen(encodersDir) , wfd.cFileName , 
 			wcscat_s(
 			tmpDll = LoadLibrary(wfd.*/
 		}
 	} while(1);
 
-	free(dllPath);
+	
 	return MMC_OK;
 }
 int ScanFilters()

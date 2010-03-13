@@ -9,6 +9,7 @@ ID:            $Id$
 =================================================================================================
 */
 #include "mmclib.h"
+#include <stdio.h>
 MmCAPI api_mmc;
 HMODULE hDll;
 void InitAPI()
