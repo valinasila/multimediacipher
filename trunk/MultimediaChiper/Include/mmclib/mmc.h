@@ -11,14 +11,21 @@ ID:            $Id$
 #include "mmclib.h"
 #define DEFAULT_ENCODERS_DIR L"encoders"
 #define DEFAULT_FILTERS_DIR	 L"filters"
-HMODULE* dllEncoders = NULL;
-int dllEncodersSize;
-HMODULE* dllFilters = NULL;
-int dllFiltersSize;
+
+typedef struct _encodersNode EncodersNode, *EncodersNodePtr;
+struct _encodersNode{
+	HMODULE*		m_dllHandle;
+	EncoderAPI  	m_API;
+	Encoder			m_pEncoder;
+	EncodersNodePtr	m_pNext;
+};
 
 LPWSTR encodersDir = NULL;
 LPWSTR filtersDir = NULL;
+EncodersNodePtr encodersList = NULL;
 
 int ScanEncoders();
 int ScanFilters();
-int ReleaseDllList(HMODULE** , int*);
+int ReleaseEncoders();
+int ReleaseFilters();
+int LoadEncodersAPI(HMODULE* dll, EncoderAPI* api);
