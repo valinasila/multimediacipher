@@ -17,3 +17,5 @@ ID:            $Id$
 #define ENCODER_TYPE	L"generic"
 
 EncoderStructPtr m_pInternalStruct = NULL;
+EncoderSignaturePtr m_pSignature = NULL;
+int m_bEncode = 1;

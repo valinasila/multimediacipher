@@ -9,3 +9,10 @@ ID:            $Id$
 =================================================================================================
 */
 #include "filter.h"
+
+#define FILTER_VERSION  L"1.0.0"
+#define FILTER_NAME		L"Generic Filter"
+#define FILTER_UID		0x01
+#define FILTER_TYPE		L"generic"
+
+FilterStructPtr m_pInternalStruct = NULL;

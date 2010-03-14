@@ -61,8 +61,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="Buffer.lib"
 				OutputFile="..\..\..\..\Bin\VS9\$(ConfigurationName)\PlayGround\encoders\$(ProjectName).dll"
 				LinkIncremental="2"
+				AdditionalLibraryDirectories="..\..\..\..\Lib\VS9\$(ConfigurationName)"
 				ModuleDefinitionFile="..\..\..\..\Export\genericEncoder.def"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -136,8 +138,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="Buffer.lib"
 				OutputFile="..\..\..\..\Bin\VS9\$(ConfigurationName)\PlayGround\encoders\$(ProjectName).dll"
 				LinkIncremental="1"
+				AdditionalLibraryDirectories="..\..\..\..\Lib\VS9\$(ConfigurationName)"
 				ModuleDefinitionFile="..\..\..\..\Export\genericEncoder.def"
 				GenerateDebugInformation="true"
 				SubSystem="2"

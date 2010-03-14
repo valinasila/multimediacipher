@@ -1,1 +1,7 @@
 LIBRARY	"genericFilter"
+
+EXPORTS
+	IsFilter				@1
+	Init					@2	
+	GetFilter               @3
+	UnInit					@4

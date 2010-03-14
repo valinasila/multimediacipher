@@ -5,3 +5,7 @@ EXPORTS
 	Init					@2	
 	GetEncoder              @3
 	UnInit					@4
+	GetEncoderSignature		@5
+	SetAction				@6
+	SetBuffer				@7
+	GetBuffer				@8
