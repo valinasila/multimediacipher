@@ -29,6 +29,12 @@ struct _encoderStruct {
 	LPWSTR				m_szType;	
 	unsigned long long	m_ulUid;
 };
+typedef struct _encoderSignature EncoderSignature, *EncoderSignaturePtr;
+struct _encoderSignature{
+	unsigned long long	m_ulSignatureStartPos;
+	unsigned char*		m_Signature;
+	unsigned long long  m_ulSignatureSize;
+};
 typedef enum _encoderRet {
 	ENC_RET_OK					= 0,
 	ENC_RET_UnknownError		= -500,
@@ -48,10 +54,26 @@ typedef Encoder (*getEncoderFn) ();
 API_EXPORT EncoderRet UnInit();
 typedef EncoderRet (*uninitEncoderFn) ();
 
+API_EXPORT EncoderSignaturePtr GetEncoderSignature();
+typedef EncoderSignaturePtr (*getEncoderSignatureFn)();
+
+API_EXPORT EncoderRet SetAction(int bEncode);
+typedef EncoderRet (*setActionFn)(int);
+
+API_EXPORT	EncoderRet SetBuffer(const unsigned char* buffer, unsigned int bufferSize);
+typedef	EncoderRet (*setBufferFn)(const unsigned char*,unsigned int);
+
+API_EXPORT	EncoderRet GetBuffer(const unsigned char** buffer, unsigned int* bufferSize);
+typedef	EncoderRet (*getBufferFn)(const unsigned char**,unsigned int*);
+
 typedef struct _encoderAPI{
 	isEncoderFn				m_lpfnIsEncoder	;	
 	initEncoderFn			m_lpfnInit;
 	getEncoderFn			m_lpfnGetEncoder;
 	uninitEncoderFn			m_lpfnUnInit;
+	getEncoderSignatureFn	m_lpfnGetEncoderSignature;
+	setActionFn				m_lpfnSetAction;
+	setBufferFn				m_lpfnSetBuffer;
+	getBufferFn				m_lpfnGetBuffer;
 } EncoderAPI;
 #endif

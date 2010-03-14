@@ -18,14 +18,22 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tester", "tester\tester.vcp
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Export", "Export", "{9532CE17-C89B-49EB-8086-D0BEAEEE1E0E}"
 	ProjectSection(SolutionItems) = preProject
+		..\..\Include\Export\Buffer.h = ..\..\Include\Export\Buffer.h
 		..\..\Include\Export\encoder.h = ..\..\Include\Export\encoder.h
 		..\..\Include\Export\filter.h = ..\..\Include\Export\filter.h
 		..\..\Include\Export\mmclib.h = ..\..\Include\Export\mmclib.h
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "genericEncoder", "encoders\genericEncoder\genericEncoder.vcproj", "{E357E182-A68A-42BD-8733-1733584FBD4E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{CCF1A17A-678F-465D-ACC0-2ED0E3BA49E0} = {CCF1A17A-678F-465D-ACC0-2ED0E3BA49E0}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "genericFilter", "filters\genericFilter\genericFilter.vcproj", "{3A638A04-FD0F-4D87-BF4C-D08D92DC7B38}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "utils", "utils", "{7479F111-16EA-4FFB-AACA-DABC4C90DDFC}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Buffer", "Buffer\Buffer.vcproj", "{CCF1A17A-678F-465D-ACC0-2ED0E3BA49E0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -49,6 +57,10 @@ Global
 		{3A638A04-FD0F-4D87-BF4C-D08D92DC7B38}.Debug|Win32.Build.0 = Debug|Win32
 		{3A638A04-FD0F-4D87-BF4C-D08D92DC7B38}.Release|Win32.ActiveCfg = Release|Win32
 		{3A638A04-FD0F-4D87-BF4C-D08D92DC7B38}.Release|Win32.Build.0 = Release|Win32
+		{CCF1A17A-678F-465D-ACC0-2ED0E3BA49E0}.Debug|Win32.ActiveCfg = Debug|Win32
+		{CCF1A17A-678F-465D-ACC0-2ED0E3BA49E0}.Debug|Win32.Build.0 = Debug|Win32
+		{CCF1A17A-678F-465D-ACC0-2ED0E3BA49E0}.Release|Win32.ActiveCfg = Release|Win32
+		{CCF1A17A-678F-465D-ACC0-2ED0E3BA49E0}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -56,5 +68,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{3A638A04-FD0F-4D87-BF4C-D08D92DC7B38} = {FE67577A-1A9D-44DB-BE8C-2FD692D5BB38}
 		{E357E182-A68A-42BD-8733-1733584FBD4E} = {61E6B743-5F71-4297-8F82-A9C7B751C8DF}
+		{CCF1A17A-678F-465D-ACC0-2ED0E3BA49E0} = {7479F111-16EA-4FFB-AACA-DABC4C90DDFC}
 	EndGlobalSection
 EndGlobal

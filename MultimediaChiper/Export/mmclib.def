@@ -5,3 +5,5 @@ EXPORTS
 	UnInit						@2
 	ChangeEncodersFolder		@3
 	ChangeFiltersFolder			@4
+	EnumerateEncoders			@5
+	EnumerateFilters			@6

@@ -138,8 +138,17 @@ int ScanEncoders()
 			}
 			else
 			{
-				node->m_API.m_lpfnInit();
+				node->m_API.m_lpfnInit();				
 				node->m_pEncoder = node->m_API.m_lpfnGetEncoder();
+				m_Encoders = (Encoder*) realloc(m_Encoders, sizeof(Encoder) * (EncodersSize + 1) );
+				if(! m_Encoders)
+				{
+					free(dllPath);	
+					free(dllDir);
+					return MMC_MEMORY_ERROR;
+				}
+				*(m_Encoders + EncodersSize) = node->m_pEncoder;
+				EncodersSize ++;
 				node->m_pNext = encodersList;
 				if(NULL != encodersList)
 					encodersList->m_pNext = node;
@@ -155,6 +164,75 @@ int ScanEncoders()
 }
 int ScanFilters()
 {
+	int bRunning = 1;	
+	HANDLE hFile = NULL;	
+	WIN32_FIND_DATA wfd;
+	HMODULE* tmpDll;	
+	LPWSTR dllPath = (LPWSTR) malloc(sizeof(WCHAR) * MAX_PATH);
+	LPWSTR dllDir = (LPWSTR) malloc(sizeof(WCHAR) * ( wcslen(filtersDir) + 6 ) );
+
+	memcpy(dllDir , filtersDir , sizeof(WCHAR) * wcslen(filtersDir) );
+	memcpy(dllDir + wcslen(filtersDir),L"*.dll", sizeof(WCHAR) * 5);
+	dllDir[wcslen(filtersDir) + 5] = L'\0';
+	memcpy(dllPath , dllDir , sizeof(WCHAR) * wcslen(dllDir) );
+
+	ReleaseFilters();
+	
+	do{
+		if(hFile == NULL)
+		{
+			hFile = FindFirstFile(dllDir,&wfd);
+			if(INVALID_HANDLE_VALUE == hFile)
+			{
+				free(dllPath);	
+				free(dllDir);
+				return MMC_WRONG_FILTERS_FOLDER;
+			}
+		}
+		else
+		{
+			if( ! FindNextFile(hFile,&wfd) )
+				break;
+		}				
+		memcpy(dllPath + wcslen(filtersDir) , wfd.cFileName , sizeof(WCHAR) * wcslen(wfd.cFileName)); 
+		dllPath[wcslen(filtersDir) + wcslen(wfd.cFileName)] = L'\0';	
+		tmpDll = (HMODULE*) malloc(sizeof(HMODULE));
+		if( NULL ==(*tmpDll = LoadLibrary(dllPath)) )
+		{
+			free(tmpDll);
+		}
+		else
+		{
+			FiltersNodePtr node = (FiltersNodePtr) malloc(sizeof(FiltersNode));
+			node->m_dllHandle = tmpDll;
+			if( MMC_OK !=  LoadFiltersAPI(tmpDll,&node->m_API ) )
+			{
+				free(node);
+			}
+			else
+			{
+				node->m_API.m_lpfnInit();
+				node->m_pFilter = node->m_API.m_lpfnGetFilter();
+				m_Filters = (Filter*) realloc(m_Filters, sizeof(Filter) * (FiltersSize + 1) );
+				if(! m_Filters)
+				{
+					free(dllPath);	
+					free(dllDir);
+					return MMC_MEMORY_ERROR;
+				}
+				*(m_Filters + FiltersSize) = node->m_pFilter;
+				FiltersSize ++;
+				node->m_pNext = filtersList;
+				if(NULL != filtersList)
+					filtersList->m_pNext = node;
+				else
+					filtersList = node;
+			}
+		}
+	} while(1);
+
+	free(dllPath);	
+	free(dllDir);
 	return MMC_OK;
 }
 int ReleaseEncoders()
@@ -169,21 +247,65 @@ int ReleaseEncoders()
 		free(node);
 		node = encodersList;
 	}
+	if(m_Encoders)
+		free(m_Encoders);
+	EncodersSize = 0;
 	return MMC_OK;
 }
 int ReleaseFilters()
 {
+	FiltersNodePtr node = filtersList;
+	while(node)
+	{
+		filtersList = node->m_pNext;
+		node->m_API.m_lpfnUnInit();		
+		FreeLibrary(*node->m_dllHandle);
+		free(node->m_dllHandle);
+		free(node);
+		node = filtersList;
+	}
+	if(m_Filters)
+		free(m_Filters);
+	FiltersSize = 0;
 	return MMC_OK;
 }
 int LoadEncodersAPI(HMODULE* dll, EncoderAPI* api)
 {
 #define CHECK_ENC_DLL(x) if(NULL == x) return MMC_WRONG_ENCODER_LIBRARY;
-	api->m_lpfnIsEncoder = (isEncoderFn) GetProcAddress(*dll,"IsEncoder"); CHECK_ENC_DLL(api->m_lpfnIsEncoder)
-	api->m_lpfnInit = (initEncoderFn) GetProcAddress(*dll,"Init"); CHECK_ENC_DLL(api->m_lpfnInit)
-	api->m_lpfnUnInit = (uninitEncoderFn) GetProcAddress(*dll,"UnInit"); CHECK_ENC_DLL(api->m_lpfnUnInit)
-	api->m_lpfnGetEncoder = (getEncoderFn) GetProcAddress(*dll,"GetEncoder"); CHECK_ENC_DLL(api->m_lpfnGetEncoder)
+	api->m_lpfnIsEncoder			= (isEncoderFn) GetProcAddress(*dll,"IsEncoder");						CHECK_ENC_DLL(api->m_lpfnIsEncoder)
+	api->m_lpfnInit					= (initEncoderFn) GetProcAddress(*dll,"Init");							CHECK_ENC_DLL(api->m_lpfnInit)
+	api->m_lpfnUnInit				= (uninitEncoderFn) GetProcAddress(*dll,"UnInit");						CHECK_ENC_DLL(api->m_lpfnUnInit)
+	api->m_lpfnGetEncoder			= (getEncoderFn) GetProcAddress(*dll,"GetEncoderSignature");			CHECK_ENC_DLL(api->m_lpfnGetEncoder)
+	api->m_lpfnGetEncoderSignature	= (getEncoderSignatureFn) GetProcAddress(*dll,"GetEncoder");			CHECK_ENC_DLL(api->m_lpfnGetEncoderSignature)
+	api->m_lpfnSetAction			= (setActionFn) GetProcAddress(*dll,"SetAction");						CHECK_ENC_DLL(api->m_lpfnSetAction)
+	api->m_lpfnSetBuffer			= (setBufferFn) GetProcAddress(*dll,"SetBuffer");						CHECK_ENC_DLL(api->m_lpfnSetBuffer)
+	api->m_lpfnGetBuffer			= (getBufferFn) GetProcAddress(*dll,"GetBuffer");						CHECK_ENC_DLL(api->m_lpfnGetBuffer)
 	if(ENC_RET_IsEncoder  != api->m_lpfnIsEncoder() )
 		return MMC_WRONG_ENCODER_LIBRARY;
 	
+	return MMC_OK;
+}
+int LoadFiltersAPI(HMODULE* dll, FilterAPI* api)
+{
+#define CHECK_FIL_DLL(x) if(NULL == x) return MMC_WRONG_FILTER_LIBRARY;
+	api->m_lpfnIsFilter		= (isFilterFn) GetProcAddress(*dll,"IsFilter");		CHECK_FIL_DLL(api->m_lpfnIsFilter)
+	api->m_lpfnInit			= (initFilterFn) GetProcAddress(*dll,"Init");		CHECK_FIL_DLL(api->m_lpfnInit)
+	api->m_lpfnUnInit		= (uninitFilterFn) GetProcAddress(*dll,"UnInit");	CHECK_FIL_DLL(api->m_lpfnUnInit)
+	api->m_lpfnGetFilter	= (getFilterFn) GetProcAddress(*dll,"GetFilter");	CHECK_FIL_DLL(api->m_lpfnGetFilter)
+	if(FIL_RET_IsFilter  != api->m_lpfnIsFilter() )
+		return MMC_WRONG_FILTER_LIBRARY;
+	
+	return MMC_OK;
+}
+int EnumerateEncoders(Encoder** encoders, unsigned int* size)
+{
+	*encoders = m_Encoders;
+	*size = EncodersSize;
+	return MMC_OK;
+}
+int EnumerateFilters(Filter** filters, unsigned int* size)
+{
+	*filters = m_Filters;
+	*size = FiltersSize;
 	return MMC_OK;
 }

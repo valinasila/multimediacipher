@@ -29,15 +29,49 @@ EncoderRet Init()
 	m_pInternalStruct->m_szVersion = (LPWSTR) malloc( sizeof(WCHAR) * (wcslen(ENCODER_VERSION) + 1 ) );	
 	memcpy( m_pInternalStruct->m_szVersion , ENCODER_VERSION , sizeof(WCHAR) * wcslen(ENCODER_VERSION) );
 	m_pInternalStruct->m_szVersion[wcslen(ENCODER_VERSION)] = L'\0';
+
+	m_pSignature = (EncoderSignaturePtr) malloc(sizeof(EncoderSignature) );
+	m_pSignature->m_Signature = NULL;
+	m_pSignature->m_ulSignatureSize = 0;
+	m_pSignature->m_ulSignatureStartPos = 0;
+
 	return ENC_RET_OK;
 }
 Encoder GetEncoder()
 {
 	return (Encoder) m_pInternalStruct;
 }
+EncoderSignaturePtr GetEncoderSignature()
+{
+	return m_pSignature;
+}
 EncoderRet	UnInit()
 {
 	if(m_pInternalStruct)
+	{
+		free(m_pInternalStruct->m_szName);
+		free(m_pInternalStruct->m_szType);
+		free(m_pInternalStruct->m_szVersion);
 		free(m_pInternalStruct);
+	}
+	if(m_pSignature)
+	{
+		if(m_pSignature->m_Signature)
+			free(m_pSignature->m_Signature);
+		free(m_pSignature);
+	}
+	return ENC_RET_OK;
+}
+EncoderRet SetAction(int bEncode)
+{
+	m_bEncode = bEncode;
+	return ENC_RET_OK;
+}
+EncoderRet SetBuffer(const unsigned char* buffer, unsigned int bufferSize)
+{
+	return ENC_RET_OK;
+}
+EncoderRet GetBuffer(const unsigned char** buffer, unsigned int* bufferSize)
+{
 	return ENC_RET_OK;
 }
