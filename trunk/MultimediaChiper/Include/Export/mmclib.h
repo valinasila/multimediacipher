@@ -38,6 +38,15 @@ typedef int (*enumerateEncodersFn) (Encoder**, unsigned int*);
 API_EXPORT int EnumerateFilters(Filter** filters, unsigned int* size);
 typedef int (*enumerateFiltersFn) (Filter**, unsigned int*);
 
+API_EXPORT int EncodeFile(LPCWSTR sourceFile, LPCWSTR* destFiles, int nDestFiles, const Filter** useFilters, int nFilters);
+typedef int (*encodeFileFn) (LPCWSTR, LPCWSTR*, int, const Filter**, int);
+
+API_EXPORT int DecodeFiles(LPCWSTR* sourceFiles, int nSourceFiles);
+typedef int (*decodeFilesFn) (LPCWSTR*, int);
+
+API_EXPORT int GetEncoderForFile(LPCWSTR filePath, Encoder* encoder);
+typedef Encoder (*getEncoderForFileFn) (LPCWSTR,Encoder*);
+
 typedef struct _MmCAPI{
 	initMmCFn				m_lpfnInit;	
 	uninitMmCFn				m_lpfnUnInit;
@@ -45,14 +54,25 @@ typedef struct _MmCAPI{
 	changeFilFoldersFn		m_lpfnChangeFiltersFolder;
 	enumerateEncodersFn		m_lpfnEnumerateEncoders;
 	enumerateFiltersFn		m_lpfnEnumerateFilters;
+	encodeFileFn			m_lpfnEncodeFile;
+	decodeFilesFn			m_lpfnDecodeFiles;
+	getEncoderForFileFn		m_lpfnGetEncoderForFile;
 } MmCAPI;
 
 
-#define MMC_OK 0
-#define MMC_MEMORY_ERROR 0x1000
-#define MMC_WRONG_ENCODERS_FOLDER 0x0100
-#define MMC_WRONG_ENCODER_LIBRARY 0x0101
-#define MMC_WRONG_FILTERS_FOLDER  0x0200
-#define MMC_WRONG_FILTER_LIBRARY  0x0201
+#define MMC_OK						0
+
+#define MMC_MEMORY_ERROR			0x0A00
+
+#define MMC_ENCODER_NOT_FOUND		0x0B00	
+
+#define MMC_WRONG_ENCODERS_FOLDER	0x0C00
+#define MMC_WRONG_ENCODER_LIBRARY	0x0C01
+
+#define MMC_WRONG_FILTERS_FOLDER	0x0D00
+#define MMC_WRONG_FILTER_LIBRARY	0x0D01
+
+#define MMC_READ_FILE_ERROR			0x0E00
+#define MMC_WRITE_FILE_ERROR		0x0E01
 
 #endif

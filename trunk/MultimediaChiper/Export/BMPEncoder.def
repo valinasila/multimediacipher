@@ -1,4 +1,4 @@
-LIBRARY	"genericEncoder"
+LIBRARY	"BMPEncoder"
 
 EXPORTS
 	IsEncoder				@1

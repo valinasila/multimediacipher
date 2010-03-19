@@ -275,11 +275,10 @@ int LoadEncodersAPI(HMODULE* dll, EncoderAPI* api)
 	api->m_lpfnIsEncoder			= (isEncoderFn) GetProcAddress(*dll,"IsEncoder");						CHECK_ENC_DLL(api->m_lpfnIsEncoder)
 	api->m_lpfnInit					= (initEncoderFn) GetProcAddress(*dll,"Init");							CHECK_ENC_DLL(api->m_lpfnInit)
 	api->m_lpfnUnInit				= (uninitEncoderFn) GetProcAddress(*dll,"UnInit");						CHECK_ENC_DLL(api->m_lpfnUnInit)
-	api->m_lpfnGetEncoder			= (getEncoderFn) GetProcAddress(*dll,"GetEncoderSignature");			CHECK_ENC_DLL(api->m_lpfnGetEncoder)
-	api->m_lpfnGetEncoderSignature	= (getEncoderSignatureFn) GetProcAddress(*dll,"GetEncoder");			CHECK_ENC_DLL(api->m_lpfnGetEncoderSignature)
+	api->m_lpfnGetEncoder			= (getEncoderFn) GetProcAddress(*dll,"GetEncoder");						CHECK_ENC_DLL(api->m_lpfnGetEncoder)
+	api->m_lpfnGetEncoderSignature	= (getEncoderSignatureFn) GetProcAddress(*dll,"GetEncoderSignature");	CHECK_ENC_DLL(api->m_lpfnGetEncoderSignature)
 	api->m_lpfnSetAction			= (setActionFn) GetProcAddress(*dll,"SetAction");						CHECK_ENC_DLL(api->m_lpfnSetAction)
-	api->m_lpfnSetBuffer			= (setBufferFn) GetProcAddress(*dll,"SetBuffer");						CHECK_ENC_DLL(api->m_lpfnSetBuffer)
-	api->m_lpfnGetBuffer			= (getBufferFn) GetProcAddress(*dll,"GetBuffer");						CHECK_ENC_DLL(api->m_lpfnGetBuffer)
+	api->m_lpfnSetBuffer			= (setBufferFn) GetProcAddress(*dll,"SetBuffer");						CHECK_ENC_DLL(api->m_lpfnSetBuffer)	
 	if(ENC_RET_IsEncoder  != api->m_lpfnIsEncoder() )
 		return MMC_WRONG_ENCODER_LIBRARY;
 	
@@ -307,5 +306,59 @@ int EnumerateFilters(Filter** filters, unsigned int* size)
 {
 	*filters = m_Filters;
 	*size = FiltersSize;
+	return MMC_OK;
+}
+int EncodeFile(LPCWSTR sourceFile, LPCWSTR* destFiles, int nDestFiles, const Filter** useFilters, int nFilters)
+{
+	return MMC_OK;
+}
+int DecodeFiles(LPCWSTR* sourceFiles, int nSourceFiles)
+{
+	return MMC_OK;
+}
+int GetEncoderForFile(LPCWSTR filePath, Encoder* encoder)
+{
+	EncodersNodePtr node;
+	Encoder	retEncoder = NULL;
+	unsigned char* buffer = NULL;
+	DWORD size = 0;
+	unsigned long long max_size = 0;
+	
+	EncoderSignaturePtr signature;
+
+	HANDLE hFile = CreateFile(filePath,GENERIC_READ,FILE_SHARE_READ,NULL,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,NULL);
+	if( INVALID_HANDLE_VALUE == hFile)
+	{
+		return MMC_READ_FILE_ERROR;
+	}
+	
+	node = encodersList;
+	while(node)
+	{
+		signature = node->m_API.m_lpfnGetEncoderSignature();
+		if(max_size > ( signature->m_ulSignatureStartPos + signature->m_ulSignatureSize ) )
+			max_size = signature->m_ulSignatureStartPos + signature->m_ulSignatureSize;
+		node = node->m_pNext;
+	}
+	
+	buffer = (unsigned char*) malloc( sizeof(unsigned char) * (max_size+1) );
+	if(ReadFile(hFile,buffer,(DWORD)(max_size+1),&size,NULL) )
+	{
+		node = encodersList;
+		while(node)
+		{
+			signature = node->m_API.m_lpfnGetEncoderSignature();
+			if( 0 == memcmp(signature->m_Signature,buffer+signature->m_ulSignatureStartPos,signature->m_ulSignatureSize) )
+			{
+				retEncoder = node->m_pEncoder;
+				break;
+			}
+			node = node->m_pNext;
+		}
+	}
+	free(buffer);
+	if(NULL == retEncoder)
+		return MMC_ENCODER_NOT_FOUND;
+	*encoder = retEncoder;
 	return MMC_OK;
 }
