@@ -40,6 +40,8 @@ typedef enum _encoderRet {
 	ENC_RET_UnknownError		= -500,
 	ENC_RET_WrongArgument		= -10,
 	ENC_RET_IsEncoder           = 17564,
+	ENC_RET_Wrong_File_Format   = -700,
+	ENC_RET_Insuficient_Size	= -701
 } EncoderRet;
 
 API_EXPORT EncoderRet IsEncoder();
@@ -63,9 +65,6 @@ typedef EncoderRet (*setActionFn)(int);
 API_EXPORT	EncoderRet SetBuffer(const unsigned char* buffer, unsigned int bufferSize);
 typedef	EncoderRet (*setBufferFn)(const unsigned char*,unsigned int);
 
-API_EXPORT	EncoderRet GetBuffer(const unsigned char** buffer, unsigned int* bufferSize);
-typedef	EncoderRet (*getBufferFn)(const unsigned char**,unsigned int*);
-
 typedef struct _encoderAPI{
 	isEncoderFn				m_lpfnIsEncoder	;	
 	initEncoderFn			m_lpfnInit;
@@ -73,7 +72,6 @@ typedef struct _encoderAPI{
 	uninitEncoderFn			m_lpfnUnInit;
 	getEncoderSignatureFn	m_lpfnGetEncoderSignature;
 	setActionFn				m_lpfnSetAction;
-	setBufferFn				m_lpfnSetBuffer;
-	getBufferFn				m_lpfnGetBuffer;
+	setBufferFn				m_lpfnSetBuffer;	
 } EncoderAPI;
 #endif

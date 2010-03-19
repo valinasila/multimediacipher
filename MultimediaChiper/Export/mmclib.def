@@ -7,3 +7,6 @@ EXPORTS
 	ChangeFiltersFolder			@4
 	EnumerateEncoders			@5
 	EnumerateFilters			@6
+	EncodeFile					@7
+	DecodeFiles					@8
+	GetEncoderForFile			@9

@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9,00"
-	Name="genericEncoder"
-	ProjectGUID="{E357E182-A68A-42BD-8733-1733584FBD4E}"
-	RootNamespace="genericEncoder"
+	Name="BMPEncoder"
+	ProjectGUID="{956B57DB-2121-477D-A1CF-10011A7DBE43}"
+	RootNamespace="BMPEncoder"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="196613"
 	>
@@ -41,8 +41,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\..\..\Include\Export;..\..\..\..\Include\encoders\genericEncoder"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;GENERICENCODER_EXPORTS"
+				AdditionalIncludeDirectories="..\..\..\..\Include\Export;..\..\..\..\Include\encoders\BMPEncoder"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;BMPENCODER_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -63,8 +63,7 @@
 				Name="VCLinkerTool"
 				OutputFile="..\..\..\..\Bin\VS9\$(ConfigurationName)\PlayGround\encoders\$(ProjectName).dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\..\..\..\Lib\VS9\$(ConfigurationName)"
-				ModuleDefinitionFile="..\..\..\..\Export\genericEncoder.def"
+				ModuleDefinitionFile="..\..\..\..\Export\BMPEncoder.def"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				TargetMachine="1"
@@ -118,8 +117,8 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="..\..\..\..\Include\Export;..\..\..\..\Include\encoders\genericEncoder"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;GENERICENCODER_EXPORTS"
+				AdditionalIncludeDirectories="..\..\..\..\Include\Export;..\..\..\..\Include\encoders\BMPEncoder"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;BMPENCODER_EXPORTS"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
@@ -139,8 +138,7 @@
 				Name="VCLinkerTool"
 				OutputFile="..\..\..\..\Bin\VS9\$(ConfigurationName)\PlayGround\encoders\$(ProjectName).dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\..\..\Lib\VS9\$(ConfigurationName)"
-				ModuleDefinitionFile="..\..\..\..\Export\genericEncoder.def"
+				ModuleDefinitionFile="..\..\..\..\Export\BMPEncoder.def"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"
@@ -179,11 +177,11 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\..\..\..\Export\genericEncoder.def"
+				RelativePath="..\..\..\..\Src\encoders\BMPEncoder\BMPEncoder.c"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\Src\encoders\genericEncoder\main.c"
+				RelativePath="..\..\..\..\Export\BMPEncoder.def"
 				>
 			</File>
 		</Filter>
@@ -193,7 +191,7 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath="..\..\..\..\Include\encoders\genericEncoder\genericEncoder.h"
+				RelativePath="..\..\..\..\Include\encoders\BMPEncoder\BMPEncoder.h"
 				>
 			</File>
 		</Filter>

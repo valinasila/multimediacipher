@@ -2,13 +2,13 @@
 =================================================================================================
 Filename: main.c
 Desciption: 
-Author: $Author$
-Last changed by:    $Author$
-Last changed date:    $Date$
-ID:            $Id$
+Author: $Author: claudiu.guiman $
+Last changed by:    $Author: claudiu.guiman $
+Last changed date:    $Date: 2010-03-14 19:33:19 +0200 (D, 14 mar. 2010) $
+ID:            $Id: main.c 14 2010-03-14 17:33:19Z claudiu.guiman $
 =================================================================================================
 */
-#include "genericEncoder.h"
+#include "BMPEncoder.h"
 
 
 EncoderRet IsEncoder()
@@ -31,8 +31,9 @@ EncoderRet Init()
 	m_pInternalStruct->m_szVersion[wcslen(ENCODER_VERSION)] = L'\0';
 
 	m_pSignature = (EncoderSignaturePtr) malloc(sizeof(EncoderSignature) );
-	m_pSignature->m_Signature = NULL;
-	m_pSignature->m_ulSignatureSize = 0;
+	m_pSignature->m_Signature = (unsigned char*) malloc(sizeof(unsigned char) * 2);
+	memcpy(m_pSignature->m_Signature,"BM",2);
+	m_pSignature->m_ulSignatureSize = 2;
 	m_pSignature->m_ulSignatureStartPos = 0;
 
 	return ENC_RET_OK;
