@@ -1,6 +1,6 @@
 /*
 =================================================================================================
-Filename: main.c
+Filename: BMPEncoder.c
 Desciption: 
 Author: $Author: claudiu.guiman $
 Last changed by:    $Author: claudiu.guiman $
