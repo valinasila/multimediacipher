@@ -9,7 +9,7 @@ ID:            $Id$
 =================================================================================================
 */
 #ifndef _FILTER_DEF
-#define _FILTER_DEF
+#define _FILTER_DEF 1
 #include <windows.h>
 
 # ifdef __cplusplus
@@ -51,13 +51,13 @@ typedef Filter (*getFilterFn) ();
 API_EXPORT FilterRet UnInit();
 typedef FilterRet (*uninitFilterFn) ();
 
-API_EXPORT FilterRet SetSaveTempBufferFn(saveTempBufferFn* func);
+API_EXPORT FilterRet SetSaveTempBufferFn(saveTempBufferFn func);
 typedef  FilterRet (*setSaveTempBufferFn) (saveTempBufferFn*);
 
-API_EXPORT FilterRet SetGetTempBufferFn(getTempBufferFn* func);
+API_EXPORT FilterRet SetGetTempBufferFn(getTempBufferFn func);
 typedef FilterRet (*setGetTempBufferFn) (getTempBufferFn*);
 
-API_EXPORT FilterRet SetCloseTempBufferFn(closeTempBufferFn* func);
+API_EXPORT FilterRet SetCloseTempBufferFn(closeTempBufferFn func);
 typedef FilterRet (*setCloseTempBufferFn)(closeTempBufferFn*);
 
 API_EXPORT FilterRet SetFilterAction(int bFilter);

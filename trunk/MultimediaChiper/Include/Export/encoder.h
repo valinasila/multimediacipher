@@ -9,7 +9,7 @@ ID:            $Id$
 =================================================================================================
 */
 #ifndef _ENCODER_DEF
-#define _ENCODER_DEF
+#define _ENCODER_DEF 1
 
 # ifdef __cplusplus
 #  define API_EXPORT	extern "C"

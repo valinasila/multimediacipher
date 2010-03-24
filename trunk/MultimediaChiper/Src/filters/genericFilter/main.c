@@ -46,30 +46,43 @@ FilterRet	UnInit()
 	}
 	return FIL_RET_OK;
 }
-FilterRet SetSaveTempBufferFn(saveTempBufferFn* func)
+FilterRet SetSaveTempBufferFn(saveTempBufferFn func)
 {
-	m_lpfnSaveTempBuffer = *func;
+	m_lpfnSaveTempBuffer = func;
 	return FIL_RET_OK;
 }
-FilterRet SetGetTempBufferFn(getTempBufferFn* func)
+FilterRet SetGetTempBufferFn(getTempBufferFn func)
 {
-	m_lpfnGetTempBuffer = *func;
+	m_lpfnGetTempBuffer = func;
 	return FIL_RET_OK;
 }
-FilterRet SetCloseTempBufferFn(closeTempBufferFn* func)
+FilterRet SetCloseTempBufferFn(closeTempBufferFn func)
 {
-	m_lpfnCloseTempBuffer = *func;
+	m_lpfnCloseTempBuffer = func;
 	return FIL_RET_OK;
 }
 FilterRet SetFilterAction(int bFilter)
 {
+	m_bActionFilter = bFilter;
 	return FIL_RET_OK;
 }
 FilterRet SetFilterBuffer(const unsigned char* buffer,unsigned int bufferSize,int bLastBuffer)
 {
+	if(NULL == m_lpfnSaveTempBuffer)
+		return FIL_RET_WrongArgument;
+
+	if( 0 != m_lpfnSaveTempBuffer( (Filter) m_pInternalStruct, buffer, bufferSize) )
+		return FIL_RET_UnknownError;
+
 	return FIL_RET_OK;
 }
 FilterRet GetFilterBuffer(unsigned char* buffer,unsigned int bufferSize,unsigned int* bytesWrote)
 {
+	if(NULL == m_lpfnGetTempBuffer)
+		return FIL_RET_WrongArgument;
+
+	if( 0 != m_lpfnGetTempBuffer( (Filter) m_pInternalStruct, buffer,bufferSize,bytesWrote) )
+		return FIL_RET_UnknownError;
+
 	return FIL_RET_OK;
 }

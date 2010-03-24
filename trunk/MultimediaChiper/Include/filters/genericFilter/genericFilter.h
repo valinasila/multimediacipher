@@ -19,3 +19,4 @@ FilterStructPtr m_pInternalStruct = NULL;
 saveTempBufferFn	m_lpfnSaveTempBuffer = NULL;
 getTempBufferFn		m_lpfnGetTempBuffer = NULL;
 closeTempBufferFn	m_lpfnCloseTempBuffer = NULL;
+int m_bActionFilter = TRUE;

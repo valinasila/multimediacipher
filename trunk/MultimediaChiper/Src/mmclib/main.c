@@ -138,7 +138,7 @@ int ScanEncoders()
 			}
 			else
 			{
-				node->m_API.m_lpfnInit();				
+				node->m_API.m_lpfnInit();
 				node->m_pEncoder = node->m_API.m_lpfnGetEncoder();
 				m_Encoders = (Encoder*) realloc(m_Encoders, sizeof(Encoder) * (EncodersSize + 1) );
 				if(! m_Encoders)
@@ -212,6 +212,9 @@ int ScanFilters()
 			else
 			{
 				node->m_API.m_lpfnInit();
+				node->m_API.m_lpfnSetSaveTempBufferFn(SaveTempBuffer);
+				node->m_API.m_lpfnSetGetTempBufferFn(GetTempBuffer);
+				node->m_API.m_lpfnSetCloseTempBufferFn(CloseTempBuffer);
 				node->m_pFilter = node->m_API.m_lpfnGetFilter();
 				m_Filters = (Filter*) realloc(m_Filters, sizeof(Filter) * (FiltersSize + 1) );
 				if(! m_Filters)

@@ -184,6 +184,10 @@
 				RelativePath="..\..\..\Export\mmclib.def"
 				>
 			</File>
+			<File
+				RelativePath="..\..\..\Src\mmclib\TmpBufferHandler.c"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -192,6 +196,10 @@
 			>
 			<File
 				RelativePath="..\..\..\Include\mmclib\mmc.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\Include\mmclib\TmpBufferHandler.h"
 				>
 			</File>
 		</Filter>
