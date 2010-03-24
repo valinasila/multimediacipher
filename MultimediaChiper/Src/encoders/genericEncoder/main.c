@@ -71,3 +71,7 @@ EncoderRet SetBuffer(const unsigned char* buffer, unsigned int bufferSize)
 {
 	return ENC_RET_OK;
 }
+EncoderRet GetBuffer(unsigned char* buffer, unsigned int bufferSize,unsigned int* bytesWrote)
+{
+	return ENC_RET_OK;
+}

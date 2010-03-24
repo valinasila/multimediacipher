@@ -5,3 +5,9 @@ EXPORTS
 	Init					@2	
 	GetFilter               @3
 	UnInit					@4
+	SetSaveTempBufferFn		@5
+	SetGetTempBufferFn		@6
+	SetCloseTempBufferFn	@7
+	SetFilterAction			@8
+	SetFilterBuffer			@9
+	GetFilterBuffer			@10

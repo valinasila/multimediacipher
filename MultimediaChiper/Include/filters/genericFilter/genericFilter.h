@@ -16,3 +16,6 @@ ID:            $Id$
 #define FILTER_TYPE		L"generic"
 
 FilterStructPtr m_pInternalStruct = NULL;
+saveTempBufferFn	m_lpfnSaveTempBuffer = NULL;
+getTempBufferFn		m_lpfnGetTempBuffer = NULL;
+closeTempBufferFn	m_lpfnCloseTempBuffer = NULL;
