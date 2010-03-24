@@ -8,3 +8,4 @@ EXPORTS
 	GetEncoderSignature		@5
 	SetAction				@6
 	SetBuffer				@7
+	GetBuffer				@8

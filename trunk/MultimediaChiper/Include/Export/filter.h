@@ -34,17 +34,40 @@ typedef enum _filterRet {
 	FIL_RET_IsFilter            = 4243,
 } FilterRet;
 
+// these 3 funcs templates are used by mmclib to store temporary information for filters 
+typedef int (*saveTempBufferFn) (Filter,const unsigned char*,unsigned int);
+typedef int (*getTempBufferFn) (Filter,unsigned char*,unsigned int,unsigned int*);
+typedef int (*closeTempBufferFn) (Filter);
+
 API_EXPORT FilterRet IsFilter();
 typedef FilterRet (*isFilterFn)();
 
 API_EXPORT FilterRet Init();
 typedef FilterRet (*initFilterFn)();
 
-API_EXPORT Filter GetEncoder();
+API_EXPORT Filter GetFilter();
 typedef Filter (*getFilterFn) ();
 
 API_EXPORT FilterRet UnInit();
 typedef FilterRet (*uninitFilterFn) ();
+
+API_EXPORT FilterRet SetSaveTempBufferFn(saveTempBufferFn* func);
+typedef  FilterRet (*setSaveTempBufferFn) (saveTempBufferFn*);
+
+API_EXPORT FilterRet SetGetTempBufferFn(getTempBufferFn* func);
+typedef FilterRet (*setGetTempBufferFn) (getTempBufferFn*);
+
+API_EXPORT FilterRet SetCloseTempBufferFn(closeTempBufferFn* func);
+typedef FilterRet (*setCloseTempBufferFn)(closeTempBufferFn*);
+
+API_EXPORT FilterRet SetFilterAction(int bFilter);
+typedef FilterRet (*setFilterActionFn) (int);
+
+API_EXPORT FilterRet SetFilterBuffer(const unsigned char* buffer,unsigned int bufferSize,int bLastBuffer);
+typedef FilterRet (*setFilterBufferFn) (const unsigned char*,unsigned int,int);
+
+API_EXPORT FilterRet GetFilterBuffer(unsigned char* buffer,unsigned int bufferSize,unsigned int* bytesWrote);
+typedef FilterRet (*getFilterBufferFn) (unsigned char*,unsigned int,unsigned int*);
 
 
 typedef struct _filterAPI{
@@ -52,6 +75,12 @@ typedef struct _filterAPI{
 	initFilterFn			m_lpfnInit;
 	getFilterFn				m_lpfnGetFilter;
 	uninitFilterFn			m_lpfnUnInit;
+	setSaveTempBufferFn		m_lpfnSetSaveTempBufferFn;
+	setGetTempBufferFn		m_lpfnSetGetTempBufferFn;
+	setCloseTempBufferFn	m_lpfnSetCloseTempBufferFn;
+	setFilterActionFn		m_lpfnSetAction;
+	setFilterBufferFn		m_lpfnSetBuffer;
+	getFilterBufferFn		m_lpfnGetBuffer;	
 } FilterAPI;
 
 #endif

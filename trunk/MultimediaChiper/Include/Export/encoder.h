@@ -60,10 +60,13 @@ API_EXPORT EncoderSignaturePtr GetEncoderSignature();
 typedef EncoderSignaturePtr (*getEncoderSignatureFn)();
 
 API_EXPORT EncoderRet SetAction(int bEncode);
-typedef EncoderRet (*setActionFn)(int);
+typedef EncoderRet (*setEncoderActionFn)(int);
 
 API_EXPORT	EncoderRet SetBuffer(const unsigned char* buffer, unsigned int bufferSize);
-typedef	EncoderRet (*setBufferFn)(const unsigned char*,unsigned int);
+typedef	EncoderRet (*setEncoderBufferFn)(const unsigned char*,unsigned int);
+
+API_EXPORT	EncoderRet GetBuffer(unsigned char* buffer, unsigned int bufferSize,unsigned int* bytesWrote);
+typedef	EncoderRet (*getEncoderBufferFn)(const unsigned char*,unsigned int,unsigned int*);
 
 typedef struct _encoderAPI{
 	isEncoderFn				m_lpfnIsEncoder	;	
@@ -71,7 +74,8 @@ typedef struct _encoderAPI{
 	getEncoderFn			m_lpfnGetEncoder;
 	uninitEncoderFn			m_lpfnUnInit;
 	getEncoderSignatureFn	m_lpfnGetEncoderSignature;
-	setActionFn				m_lpfnSetAction;
-	setBufferFn				m_lpfnSetBuffer;	
+	setEncoderActionFn		m_lpfnSetAction;
+	setEncoderBufferFn		m_lpfnSetBuffer;	
+	getEncoderBufferFn		m_lpfnGetBuffer;
 } EncoderAPI;
 #endif

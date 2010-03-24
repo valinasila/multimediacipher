@@ -46,3 +46,30 @@ FilterRet	UnInit()
 	}
 	return FIL_RET_OK;
 }
+FilterRet SetSaveTempBufferFn(saveTempBufferFn* func)
+{
+	m_lpfnSaveTempBuffer = *func;
+	return FIL_RET_OK;
+}
+FilterRet SetGetTempBufferFn(getTempBufferFn* func)
+{
+	m_lpfnGetTempBuffer = *func;
+	return FIL_RET_OK;
+}
+FilterRet SetCloseTempBufferFn(closeTempBufferFn* func)
+{
+	m_lpfnCloseTempBuffer = *func;
+	return FIL_RET_OK;
+}
+FilterRet SetFilterAction(int bFilter)
+{
+	return FIL_RET_OK;
+}
+FilterRet SetFilterBuffer(const unsigned char* buffer,unsigned int bufferSize,int bLastBuffer)
+{
+	return FIL_RET_OK;
+}
+FilterRet GetFilterBuffer(unsigned char* buffer,unsigned int bufferSize,unsigned int* bytesWrote)
+{
+	return FIL_RET_OK;
+}
