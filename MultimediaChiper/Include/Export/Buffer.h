@@ -9,7 +9,7 @@ ID:            $Id: filter.h 6 2010-03-12 08:09:18Z claudiu.guiman $
 =================================================================================================
 */
 #ifndef _BUFFER_DEF
-#define _BUFFER_DEF
+#define _BUFFER_DEF 1
 #include <windows.h>
 
 typedef void*	Buffer;

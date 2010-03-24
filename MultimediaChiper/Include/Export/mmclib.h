@@ -9,7 +9,7 @@ ID:            $Id$
 =================================================================================================
 */
 #ifndef _MMCLIB_DEF
-#define _MMCLIB_DEF
+#define _MMCLIB_DEF 1
 #include <windows.h>
 #include "encoder.h"
 #include "filter.h"

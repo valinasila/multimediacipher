@@ -8,7 +8,12 @@ Last changed date:    $Date$
 ID:            $Id$
 =================================================================================================
 */
+
+#ifndef _MMC_H_ONCE
+#define _MMC_H_ONCE 1
+
 #include "mmclib.h"
+#include "TmpBufferhandler.h"
 #define DEFAULT_ENCODERS_DIR L"encoders"
 #define DEFAULT_FILTERS_DIR	 L"filters"
 
@@ -27,8 +32,6 @@ struct _filtersNode{
 	FiltersNodePtr	m_pNext;
 };
 
-
-
 LPWSTR encodersDir = NULL;
 LPWSTR filtersDir = NULL;
 EncodersNodePtr encodersList = NULL;
@@ -44,3 +47,5 @@ int ReleaseEncoders();
 int ReleaseFilters();
 int LoadEncodersAPI(HMODULE* dll, EncoderAPI* api);
 int LoadFiltersAPI(HMODULE* dll, FilterAPI* api);
+
+#endif
