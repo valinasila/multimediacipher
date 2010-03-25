@@ -35,6 +35,11 @@ int main()
 {
 	int ret;
 	unsigned int i;
+	WCHAR path[MAX_PATH] = {0};
+	WCHAR path2[MAX_PATH] = {0};
+	LPWSTR* files = NULL; 
+	Filter* filters = NULL;
+	int filtersCount = 0;
 	Encoder encoder = NULL;
 	InitAPI();
 	ret = api_mmc.m_lpfnInit();
@@ -52,7 +57,7 @@ int main()
 	for(i = 0; i < encoderListSize; i++)
 	{
 		EncoderStructPtr tmpEnc = (EncoderStructPtr) *(encoderList + i);
-		wprintf(L"[%lld] %s %s  - %s\n",tmpEnc->m_ulUid,tmpEnc->m_szName,tmpEnc->m_szVersion,tmpEnc->m_szType);
+		wprintf(L"%d. [%lld] %s %s  - %s\n",i+1,tmpEnc->m_ulUid,tmpEnc->m_szName,tmpEnc->m_szVersion,tmpEnc->m_szType);
 	}
 
 	api_mmc.m_lpfnEnumerateFilters(&filterList,&filterListSize);
@@ -60,16 +65,18 @@ int main()
 	for(i = 0; i < filterListSize; i++)
 	{
 		FilterStructPtr tmpFil = (FilterStructPtr) *(filterList + i);		
-		wprintf(L"[%lld] %s %s  - %s\n",tmpFil->m_ulUid,tmpFil->m_szName,tmpFil->m_szVersion,tmpFil->m_szType);
+		wprintf(L"%d. [%lld] %s %s  - %s\n",i+1,tmpFil->m_ulUid,tmpFil->m_szName,tmpFil->m_szVersion,tmpFil->m_szType);
 	}
 
-	ret =  api_mmc.m_lpfnGetEncoderForFile(L"mmclib.lib",&encoder);
+	printf("\n\nPath to file:");
+	wscanf_s(L"%s",path,MAX_PATH-1);
+	ret =  api_mmc.m_lpfnGetEncoderForFile(path,&encoder);
 	if(MMC_OK == ret)
 	{
 		EncoderStructPtr tmpEnc = (EncoderStructPtr) encoder;
 		wprintf(L"\n\nFound encoder:\n[%lld] %s %s  - %s\n",tmpEnc->m_ulUid,tmpEnc->m_szName,tmpEnc->m_szVersion,tmpEnc->m_szType);		
 	}
-	if(MMC_ENCODER_NOT_FOUND == ret)
+	else
 	{
 		wprintf(L"\n\nNo encoder found for that file\n");
 		api_mmc.m_lpfnUnInit();
@@ -77,7 +84,23 @@ int main()
 		system("pause");
 		return 0;
 	}
+	
+	printf("\nEncoded file path:");
+	wscanf_s(L"%s",path2,MAX_PATH-1);
+	printf("\nChoose filters: ");	
+	do{
+		scanf_s("%d",&i);
+		if( (i > 0) && ( i <= filterListSize ) )
+		{
+			filters = (Filter*) realloc(filters,sizeof(Filter) * (filtersCount + 1) );
+			*(filters + filtersCount) = *(filterList + i - 1);
+			filtersCount ++;
+		}
+	} while( (i > 0) && ( i <= filterListSize ) );
 
+	files = (LPWSTR*) malloc(sizeof(LPWSTR));
+	*files = path2;
+	ret = api_mmc.m_lpfnEncodeFile(path,files,1,filters,filtersCount);
 
 	api_mmc.m_lpfnUnInit();
 	FreeLibrary(hDll);	

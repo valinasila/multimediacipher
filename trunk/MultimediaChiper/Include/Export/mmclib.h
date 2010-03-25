@@ -38,8 +38,8 @@ typedef int (*enumerateEncodersFn) (Encoder**, unsigned int*);
 API_EXPORT int EnumerateFilters(Filter** filters, unsigned int* size);
 typedef int (*enumerateFiltersFn) (Filter**, unsigned int*);
 
-API_EXPORT int EncodeFile(LPCWSTR sourceFile, LPCWSTR* destFiles, int nDestFiles, const Filter** useFilters, int nFilters);
-typedef int (*encodeFileFn) (LPCWSTR, LPCWSTR*, int, const Filter**, int);
+API_EXPORT int EncodeFile(LPCWSTR sourceFile, LPCWSTR* destFiles, int nDestFiles, const Filter* useFilters, int nFilters);
+typedef int (*encodeFileFn) (LPCWSTR, LPCWSTR*, int, const Filter*, int);
 
 API_EXPORT int DecodeFiles(LPCWSTR* sourceFiles, int nSourceFiles);
 typedef int (*decodeFilesFn) (LPCWSTR*, int);
