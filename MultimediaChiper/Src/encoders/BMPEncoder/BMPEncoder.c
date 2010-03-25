@@ -76,3 +76,7 @@ EncoderRet GetBuffer(unsigned char* buffer, unsigned int bufferSize,unsigned int
 {
 	return ENC_RET_OK;
 }
+EncoderRet ReloadEncoder()
+{
+	return ENC_RET_OK;
+}

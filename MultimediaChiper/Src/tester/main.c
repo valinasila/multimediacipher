@@ -56,7 +56,7 @@ int main()
 	}
 
 	api_mmc.m_lpfnEnumerateFilters(&filterList,&filterListSize);
-	printf("Filters:\n");
+	printf("\n\nFilters:\n");
 	for(i = 0; i < filterListSize; i++)
 	{
 		FilterStructPtr tmpFil = (FilterStructPtr) *(filterList + i);		
@@ -67,10 +67,16 @@ int main()
 	if(MMC_OK == ret)
 	{
 		EncoderStructPtr tmpEnc = (EncoderStructPtr) encoder;
-		wprintf(L"[%lld] %s %s  - %s\n",tmpEnc->m_ulUid,tmpEnc->m_szName,tmpEnc->m_szVersion,tmpEnc->m_szType);		
+		wprintf(L"\n\nFound encoder:\n[%lld] %s %s  - %s\n",tmpEnc->m_ulUid,tmpEnc->m_szName,tmpEnc->m_szVersion,tmpEnc->m_szType);		
 	}
 	if(MMC_ENCODER_NOT_FOUND == ret)
-		wprintf(L"No encoder found for that file\n");
+	{
+		wprintf(L"\n\nNo encoder found for that file\n");
+		api_mmc.m_lpfnUnInit();
+		FreeLibrary(hDll);	
+		system("pause");
+		return 0;
+	}
 
 
 	api_mmc.m_lpfnUnInit();

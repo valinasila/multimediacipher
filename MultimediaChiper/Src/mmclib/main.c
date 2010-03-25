@@ -274,9 +274,10 @@ int LoadEncodersAPI(HMODULE* dll, EncoderAPI* api)
 	api->m_lpfnUnInit				= (uninitEncoderFn) GetProcAddress(*dll,"UnInit");						CHECK_ENC_DLL(api->m_lpfnUnInit)
 	api->m_lpfnGetEncoder			= (getEncoderFn) GetProcAddress(*dll,"GetEncoder");						CHECK_ENC_DLL(api->m_lpfnGetEncoder)
 	api->m_lpfnGetEncoderSignature	= (getEncoderSignatureFn) GetProcAddress(*dll,"GetEncoderSignature");	CHECK_ENC_DLL(api->m_lpfnGetEncoderSignature)
-	api->m_lpfnSetAction			= (setEncoderActionFn) GetProcAddress(*dll,"SetAction");						CHECK_ENC_DLL(api->m_lpfnSetAction)
-	api->m_lpfnSetBuffer			= (setEncoderBufferFn) GetProcAddress(*dll,"SetBuffer");						CHECK_ENC_DLL(api->m_lpfnSetBuffer)	
-	api->m_lpfnGetBuffer			= (getEncoderBufferFn) GetProcAddress(*dll,"GetBuffer");						CHECK_ENC_DLL(api->m_lpfnGetBuffer)	
+	api->m_lpfnSetAction			= (setEncoderActionFn) GetProcAddress(*dll,"SetAction");				CHECK_ENC_DLL(api->m_lpfnSetAction)
+	api->m_lpfnSetBuffer			= (setEncoderBufferFn) GetProcAddress(*dll,"SetBuffer");				CHECK_ENC_DLL(api->m_lpfnSetBuffer)	
+	api->m_lpfnGetBuffer			= (getEncoderBufferFn) GetProcAddress(*dll,"GetBuffer");				CHECK_ENC_DLL(api->m_lpfnGetBuffer)	
+	api->m_lpfnReloadEncoder		= (reloadEncoderFn) GetProcAddress(*dll,"ReloadEncoder");				CHECK_ENC_DLL(api->m_lpfnReloadEncoder)
 	if(ENC_RET_IsEncoder  != api->m_lpfnIsEncoder() )
 		return MMC_WRONG_ENCODER_LIBRARY;
 	
@@ -296,6 +297,7 @@ int LoadFiltersAPI(HMODULE* dll, FilterAPI* api)
 	api->m_lpfnSetBuffer	= (setFilterBufferFn) GetProcAddress(*dll,"SetFilterBuffer");	CHECK_FIL_DLL(api->m_lpfnSetBuffer)
 	api->m_lpfnGetBuffer	= (getFilterBufferFn) GetProcAddress(*dll,"GetFilterBuffer");	CHECK_FIL_DLL(api->m_lpfnGetBuffer)
 	api->m_lpfnSetInputBuffer = (setFilterInputBufferFn) GetProcAddress(*dll,"SetFilterInputBuffer");	CHECK_FIL_DLL(api->m_lpfnSetInputBuffer)
+	api->m_lpfnReloadFilter = (reloadFilterFn) GetProcAddress(*dll,"ReloadFilter");	CHECK_FIL_DLL(api->m_lpfnReloadFilter)
 	if(FIL_RET_IsFilter  != api->m_lpfnIsFilter() )
 		return MMC_WRONG_FILTER_LIBRARY;
 	

@@ -18,4 +18,8 @@ ID:            $Id$
 
 EncoderStructPtr m_pInternalStruct = NULL;
 EncoderSignaturePtr m_pSignature = NULL;
-int m_bEncode = 1;
+unsigned char* tempBuffer = NULL;
+unsigned int tempBufferSize = 0;
+unsigned int tempBufferUsedBytes = 0;
+int m_bEncode = TRUE;
+int m_bFirstBuffer = TRUE;

@@ -12,3 +12,4 @@ EXPORTS
 	SetFilterBuffer			@9
 	GetFilterBuffer			@10
 	SetFilterInputBuffer	@11
+	ReloadFilter			@12
