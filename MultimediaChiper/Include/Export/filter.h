@@ -24,13 +24,16 @@ struct _filterStruct {
 	FilterStructPtr	    m_pThis;
 	LPWSTR				m_szName;
 	LPWSTR				m_szVersion;	
-	LPWSTR				m_szType;	
+	LPWSTR				m_szType;
+	int					m_bUseinputForFilter; // a filter may need a password or some input to filter the buffer (crypt filters)
+											  // generaly this is FALSE; if TRUE, mmclib must set the input buffer with SetFilterInputBuffer()
 	unsigned long long	m_ulUid;
 };
 typedef enum _filterRet {
 	FIL_RET_OK					= 0,
 	FIL_RET_UnknownError		= -500,
 	FIL_RET_WrongArgument		= -10,
+	FIL_RET_NotImplemented		= -15,
 	FIL_RET_IsFilter            = 4243,
 } FilterRet;
 
@@ -52,13 +55,13 @@ API_EXPORT FilterRet UnInit();
 typedef FilterRet (*uninitFilterFn) ();
 
 API_EXPORT FilterRet SetSaveTempBufferFn(saveTempBufferFn func);
-typedef  FilterRet (*setSaveTempBufferFn) (saveTempBufferFn*);
+typedef  FilterRet (*setSaveTempBufferFn) (saveTempBufferFn);
 
 API_EXPORT FilterRet SetGetTempBufferFn(getTempBufferFn func);
-typedef FilterRet (*setGetTempBufferFn) (getTempBufferFn*);
+typedef FilterRet (*setGetTempBufferFn) (getTempBufferFn);
 
 API_EXPORT FilterRet SetCloseTempBufferFn(closeTempBufferFn func);
-typedef FilterRet (*setCloseTempBufferFn)(closeTempBufferFn*);
+typedef FilterRet (*setCloseTempBufferFn)(closeTempBufferFn);
 
 API_EXPORT FilterRet SetFilterAction(int bFilter);
 typedef FilterRet (*setFilterActionFn) (int);
@@ -69,6 +72,8 @@ typedef FilterRet (*setFilterBufferFn) (const unsigned char*,unsigned int,int);
 API_EXPORT FilterRet GetFilterBuffer(unsigned char* buffer,unsigned int bufferSize,unsigned int* bytesWrote);
 typedef FilterRet (*getFilterBufferFn) (unsigned char*,unsigned int,unsigned int*);
 
+API_EXPORT FilterRet SetFilterInputBuffer(unsigned char* buffer, unsigned int bufferSize);
+typedef FilterRet (*setFilterInputBufferFn) (unsigned char*,unsigned int);
 
 typedef struct _filterAPI{
 	isFilterFn				m_lpfnIsFilter	;	
@@ -80,7 +85,8 @@ typedef struct _filterAPI{
 	setCloseTempBufferFn	m_lpfnSetCloseTempBufferFn;
 	setFilterActionFn		m_lpfnSetAction;
 	setFilterBufferFn		m_lpfnSetBuffer;
-	getFilterBufferFn		m_lpfnGetBuffer;	
+	getFilterBufferFn		m_lpfnGetBuffer;
+	setFilterInputBufferFn  m_lpfnSetInputBuffer;
 } FilterAPI;
 
 #endif

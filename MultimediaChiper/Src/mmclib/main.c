@@ -150,10 +150,7 @@ int ScanEncoders()
 				*(m_Encoders + EncodersSize) = node->m_pEncoder;
 				EncodersSize ++;
 				node->m_pNext = encodersList;
-				if(NULL != encodersList)
-					encodersList->m_pNext = node;
-				else
-					encodersList = node;
+				encodersList = node;
 			}
 		}
 	} while(1);
@@ -226,10 +223,7 @@ int ScanFilters()
 				*(m_Filters + FiltersSize) = node->m_pFilter;
 				FiltersSize ++;
 				node->m_pNext = filtersList;
-				if(NULL != filtersList)
-					filtersList->m_pNext = node;
-				else
-					filtersList = node;
+				filtersList = node;
 			}
 		}
 	} while(1);
@@ -301,6 +295,7 @@ int LoadFiltersAPI(HMODULE* dll, FilterAPI* api)
 	api->m_lpfnSetAction	= (setFilterActionFn) GetProcAddress(*dll,"SetFilterAction");	CHECK_FIL_DLL(api->m_lpfnSetAction)
 	api->m_lpfnSetBuffer	= (setFilterBufferFn) GetProcAddress(*dll,"SetFilterBuffer");	CHECK_FIL_DLL(api->m_lpfnSetBuffer)
 	api->m_lpfnGetBuffer	= (getFilterBufferFn) GetProcAddress(*dll,"GetFilterBuffer");	CHECK_FIL_DLL(api->m_lpfnGetBuffer)
+	api->m_lpfnSetInputBuffer = (setFilterInputBufferFn) GetProcAddress(*dll,"SetFilterInputBuffer");	CHECK_FIL_DLL(api->m_lpfnSetInputBuffer)
 	if(FIL_RET_IsFilter  != api->m_lpfnIsFilter() )
 		return MMC_WRONG_FILTER_LIBRARY;
 	
@@ -351,14 +346,14 @@ int GetEncoderForFile(LPCWSTR filePath, Encoder* encoder)
 		node = node->m_pNext;
 	}
 	
-	buffer = (unsigned char*) malloc( sizeof(unsigned char) * (max_size+1) );
+	buffer = (unsigned char*) malloc( sizeof(unsigned char) * ((size_t)(max_size+1)) );
 	if(ReadFile(hFile,buffer,(DWORD)(max_size+1),&size,NULL) )
 	{
 		node = encodersList;
 		while(node)
 		{
 			signature = node->m_API.m_lpfnGetEncoderSignature();
-			if( 0 == memcmp(signature->m_Signature,buffer+signature->m_ulSignatureStartPos,signature->m_ulSignatureSize) )
+			if( 0 == memcmp(signature->m_Signature,buffer+signature->m_ulSignatureStartPos, (size_t) signature->m_ulSignatureSize) )
 			{
 				retEncoder = node->m_pEncoder;
 				break;
