@@ -20,6 +20,7 @@ FilterRet Init()
 	m_pInternalStruct = (FilterStructPtr) malloc( sizeof(FilterStruct) );
 	m_pInternalStruct->m_pThis = m_pInternalStruct;
 	m_pInternalStruct->m_ulUid = FILTER_UID;
+	m_pInternalStruct->m_bUseinputForFilter = FILTER_USE_INPUT;
 	m_pInternalStruct->m_szName = (LPWSTR) malloc( sizeof(WCHAR) * ( wcslen(FILTER_NAME) + 1 ) );
 	memcpy( m_pInternalStruct->m_szName , FILTER_NAME , sizeof(WCHAR) * wcslen(FILTER_NAME) );
 	m_pInternalStruct->m_szName[wcslen(FILTER_NAME)] = L'\0';
@@ -85,4 +86,8 @@ FilterRet GetFilterBuffer(unsigned char* buffer,unsigned int bufferSize,unsigned
 		return FIL_RET_UnknownError;
 
 	return FIL_RET_OK;
+}
+FilterRet SetFilterInputBuffer(unsigned char* buffer, unsigned int bufferSize)
+{
+	return FIL_RET_NotImplemented; // this filter doesn't use user input to filter the buffer
 }

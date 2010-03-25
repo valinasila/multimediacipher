@@ -14,6 +14,7 @@ ID:            $Id$
 #define FILTER_NAME		L"Generic Filter"
 #define FILTER_UID		0x01
 #define FILTER_TYPE		L"generic"
+#define FILTER_USE_INPUT FALSE
 
 FilterStructPtr m_pInternalStruct = NULL;
 saveTempBufferFn	m_lpfnSaveTempBuffer = NULL;

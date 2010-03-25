@@ -45,7 +45,7 @@ API_EXPORT int DecodeFiles(LPCWSTR* sourceFiles, int nSourceFiles);
 typedef int (*decodeFilesFn) (LPCWSTR*, int);
 
 API_EXPORT int GetEncoderForFile(LPCWSTR filePath, Encoder* encoder);
-typedef Encoder (*getEncoderForFileFn) (LPCWSTR,Encoder*);
+typedef int (*getEncoderForFileFn) (LPCWSTR,Encoder*);
 
 typedef struct _MmCAPI{
 	initMmCFn				m_lpfnInit;	
