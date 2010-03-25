@@ -75,6 +75,9 @@ typedef FilterRet (*getFilterBufferFn) (unsigned char*,unsigned int,unsigned int
 API_EXPORT FilterRet SetFilterInputBuffer(unsigned char* buffer, unsigned int bufferSize);
 typedef FilterRet (*setFilterInputBufferFn) (unsigned char*,unsigned int);
 
+API_EXPORT FilterRet ReloadFilter();
+typedef FilterRet (*reloadFilterFn)();
+
 typedef struct _filterAPI{
 	isFilterFn				m_lpfnIsFilter	;	
 	initFilterFn			m_lpfnInit;
@@ -87,6 +90,7 @@ typedef struct _filterAPI{
 	setFilterBufferFn		m_lpfnSetBuffer;
 	getFilterBufferFn		m_lpfnGetBuffer;
 	setFilterInputBufferFn  m_lpfnSetInputBuffer;
+	reloadFilterFn			m_lpfnReloadFilter;
 } FilterAPI;
 
 #endif

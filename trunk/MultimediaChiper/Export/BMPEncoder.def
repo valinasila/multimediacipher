@@ -9,3 +9,4 @@ EXPORTS
 	SetAction				@6
 	SetBuffer				@7
 	GetBuffer				@8
+	ReloadEncoder			@9

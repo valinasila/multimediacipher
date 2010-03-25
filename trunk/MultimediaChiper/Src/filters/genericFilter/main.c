@@ -91,3 +91,7 @@ FilterRet SetFilterInputBuffer(unsigned char* buffer, unsigned int bufferSize)
 {
 	return FIL_RET_NotImplemented; // this filter doesn't use user input to filter the buffer
 }
+FilterRet ReloadFilter()
+{
+	return FIL_RET_OK;
+}

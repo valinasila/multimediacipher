@@ -35,6 +35,21 @@ EncoderRet Init()
 	m_pSignature->m_ulSignatureSize = 0;
 	m_pSignature->m_ulSignatureStartPos = 0;
 
+	tempBuffer = (unsigned char*) malloc(sizeof(unsigned char) * 1024);
+	if(NULL == tempBuffer)
+		return ENC_RET_UnknownError;
+
+	tempBufferSize = 1024;
+	tempBufferUsedBytes = 0;
+	m_bEncode = TRUE;
+	m_bFirstBuffer = TRUE;
+	return ENC_RET_OK;
+}
+EncoderRet ReloadEncoder()
+{
+	m_bEncode = TRUE;
+	m_bFirstBuffer = TRUE;
+	tempBufferUsedBytes = 0;
 	return ENC_RET_OK;
 }
 Encoder GetEncoder()
@@ -60,6 +75,8 @@ EncoderRet	UnInit()
 			free(m_pSignature->m_Signature);
 		free(m_pSignature);
 	}
+	if(tempBuffer)
+		free(tempBuffer);
 	return ENC_RET_OK;
 }
 EncoderRet SetAction(int bEncode)
@@ -68,10 +85,27 @@ EncoderRet SetAction(int bEncode)
 	return ENC_RET_OK;
 }
 EncoderRet SetBuffer(const unsigned char* buffer, unsigned int bufferSize)
-{
+{	
+	if(bufferSize > tempBufferSize)
+	{
+		if(tempBuffer)
+			free(tempBuffer);
+		tempBuffer = (unsigned char*) malloc( sizeof(unsigned char) * bufferSize);
+		tempBufferSize = bufferSize;
+	}
+	memcpy(tempBuffer,buffer,bufferSize);
+	tempBufferUsedBytes = bufferSize;
+	
 	return ENC_RET_OK;
 }
 EncoderRet GetBuffer(unsigned char* buffer, unsigned int bufferSize,unsigned int* bytesWrote)
 {
+	if(bufferSize > tempBufferSize)
+	{
+		*bytesWrote = tempBufferSize;
+	}
+	else
+		*bytesWrote = bufferSize;
+	memcpy(buffer,tempBuffer,*bytesWrote);
 	return ENC_RET_OK;
 }
