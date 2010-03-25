@@ -315,7 +315,7 @@ int EnumerateFilters(Filter** filters, unsigned int* size)
 	*size = FiltersSize;
 	return MMC_OK;
 }
-int EncodeFile(LPCWSTR sourceFile, LPCWSTR* destFiles, int nDestFiles, const Filter** useFilters, int nFilters)
+int EncodeFile(LPCWSTR sourceFile, LPCWSTR* destFiles, int nDestFiles, const Filter* useFilters, int nFilters)
 {
 	return MMC_OK;
 }
