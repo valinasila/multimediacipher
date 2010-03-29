@@ -61,6 +61,7 @@ typedef struct _MmCAPI{
 
 
 #define MMC_OK						0
+#define MMC_WRONG_ARGUMENTS			1
 
 #define MMC_MEMORY_ERROR			0x0A00
 

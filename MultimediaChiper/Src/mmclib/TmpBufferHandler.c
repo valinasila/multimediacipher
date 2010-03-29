@@ -37,7 +37,7 @@ int SaveTempBuffer(Filter fltr,const unsigned char* buffer, unsigned int bufferS
 		node->bFirstRead = TRUE;
 		fileList = node;
 		CreateDirectory(L"temp",NULL);
-		_snwprintf_s(path,MAX_PATH,MAX_PATH - 1,L"temp\\filter_%I64",((FilterStructPtr) fltr)->m_ulUid);		
+		_snwprintf_s(path,MAX_PATH,MAX_PATH - 1,L"temp\\filter_%lld.tmp",((FilterStructPtr) fltr)->m_ulUid);		
 
 		*hndl = CreateFile(path,GENERIC_READ | GENERIC_WRITE,0,NULL,CREATE_ALWAYS,FILE_ATTRIBUTE_TEMPORARY|FILE_FLAG_DELETE_ON_CLOSE,NULL);
 

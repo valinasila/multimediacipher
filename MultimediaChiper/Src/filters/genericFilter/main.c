@@ -36,15 +36,16 @@ Filter GetFilter()
 {
 	return (Filter) m_pInternalStruct;
 }
-FilterRet	UnInit()
+FilterRet UnInit()
 {
+	m_lpfnCloseTempBuffer( (Filter) m_pInternalStruct);
 	if(m_pInternalStruct)
 	{
 		free(m_pInternalStruct->m_szName);
 		free(m_pInternalStruct->m_szType);
 		free(m_pInternalStruct->m_szVersion);
 		free(m_pInternalStruct);
-	}
+	}	
 	return FIL_RET_OK;
 }
 FilterRet SetSaveTempBufferFn(saveTempBufferFn func)
@@ -93,5 +94,6 @@ FilterRet SetFilterInputBuffer(unsigned char* buffer, unsigned int bufferSize)
 }
 FilterRet ReloadFilter()
 {
+	m_lpfnCloseTempBuffer( (Filter) m_pInternalStruct);
 	return FIL_RET_OK;
 }

@@ -315,8 +315,99 @@ int EnumerateFilters(Filter** filters, unsigned int* size)
 	*size = FiltersSize;
 	return MMC_OK;
 }
+FiltersNodePtr GetFilterNode(Filter filter)
+{
+	FiltersNodePtr node =  filtersList;
+	while(node)
+	{
+		if(node->m_pFilter == filter)
+			break;
+		node = node->m_pNext;
+	}
+	return node;
+}
 int EncodeFile(LPCWSTR sourceFile, LPCWSTR* destFiles, int nDestFiles, const Filter* useFilters, int nFilters)
 {
+	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	//	implemented just for nDestFiles = 1
+	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	int i = 0;
+	Filter filter = NULL;
+	FilterStructPtr filterStruct = NULL;
+	FiltersNodePtr	filterNode = NULL;
+	FiltersNodePtr	prevFilterNode = NULL;
+	unsigned char* buffer;
+	unsigned int rb;
+	HANDLE hFile;
+	HANDLE hTemp;
+	WCHAR path[MAX_PATH] = {0};
+	
+	buffer = (unsigned char*) malloc(sizeof(unsigned char) * 1024);
+	if(NULL == buffer)
+		return MMC_READ_FILE_ERROR;
+	
+	for(i = 0; i < nFilters; i++)
+	{
+		filter = *(useFilters + i);
+		filterNode = GetFilterNode(filter);
+		if(NULL == filterNode)
+			return MMC_WRONG_ARGUMENTS;
+
+		filterNode->m_API.m_lpfnReloadFilter();
+		filterNode->m_API.m_lpfnSetAction(TRUE);
+		
+		if(NULL == prevFilterNode)
+		{
+			// read buffer from file
+			hFile = CreateFile(sourceFile,GENERIC_READ,FILE_SHARE_READ,NULL,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,NULL);
+			if( INVALID_HANDLE_VALUE == hFile)
+				return MMC_READ_FILE_ERROR;
+			
+			if( ! ReadFile(hFile,buffer,1024,&((DWORD)rb),NULL))
+			{
+				free(buffer);
+				CloseHandle(hFile);
+				return MMC_READ_FILE_ERROR;
+			}
+			do{
+				if(rb == 0)
+					break;
+				filterNode->m_API.m_lpfnSetBuffer(buffer,rb,FALSE);
+			}while(ReadFile(hFile,buffer,1024,&rb,NULL) );
+
+			filterNode->m_API.m_lpfnSetBuffer(NULL,0,TRUE);
+			CloseHandle(hFile);
+		}
+		else
+		{
+			// read buffer from previouse filter
+			while ( FIL_RET_OK == prevFilterNode->m_API.m_lpfnGetBuffer(buffer,1024,&rb) )
+			{
+				filterNode->m_API.m_lpfnSetBuffer(buffer,rb,FALSE);
+			}
+			filterNode->m_API.m_lpfnSetBuffer(NULL,0,TRUE);
+
+		}
+
+		prevFilterNode = filterNode;
+		
+	}
+
+	CreateDirectory(L"temp",NULL);
+	_snwprintf_s(path,MAX_PATH,MAX_PATH - 1,L"temp\\temp.tmp");	
+	hTemp = CreateFile(path,GENERIC_READ | GENERIC_WRITE,0,NULL,CREATE_ALWAYS,FILE_ATTRIBUTE_TEMPORARY|FILE_FLAG_DELETE_ON_CLOSE,NULL);	
+	if(NULL == filterNode)
+	{
+		// read buffer from file		
+		hFile = CreateFile(sourceFile,GENERIC_READ,FILE_SHARE_READ,NULL,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,NULL);
+		if( INVALID_HANDLE_VALUE == hFile)
+			return MMC_READ_FILE_ERROR;
+		CloseHandle(hFile);
+	}
+	else
+	{
+		// read buffer from prev filter
+	}
 	return MMC_OK;
 }
 int DecodeFiles(LPCWSTR* sourceFiles, int nSourceFiles)
