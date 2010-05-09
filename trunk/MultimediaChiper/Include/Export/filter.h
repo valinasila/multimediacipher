@@ -42,12 +42,6 @@ typedef enum _filterRet {
 	FIL_RET_IsFilter            = 4243,
 } FilterRet;
 
-// these 3 funcs templates are used by mmclib to store temporary information for filters 
-typedef int (*saveTempBufferFn) (Filter,const unsigned char*,unsigned int);
-typedef int (*getTempBufferFn) (Filter,unsigned char*,unsigned int,unsigned int*);
-typedef int (*closeTempBufferFn) (Filter);
-
-
 /********************************************//**
        * Checks if the library is correctly loaded
        * @return FIL_RET_IsFilter if everything is ok
