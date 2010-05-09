@@ -37,7 +37,9 @@ int main()
 	unsigned int i;
 	WCHAR path[MAX_PATH] = {0};
 	WCHAR path2[MAX_PATH] = {0};
+	WCHAR path3[MAX_PATH] = {0};
 	LPWSTR* files = NULL; 
+	LPWSTR* mediaFiles = NULL;
 	Filter* filters = NULL;
 	int filtersCount = 0;
 	Encoder encoder = NULL;
@@ -84,7 +86,9 @@ int main()
 		system("pause");
 		return 0;
 	}
-	
+	printf("\nSource file path:");
+	wscanf_s(L"%s",path3,MAX_PATH-1);
+
 	printf("\nEncoded file path:");
 	wscanf_s(L"%s",path2,MAX_PATH-1);
 	printf("\nChoose filters: ");	
@@ -100,8 +104,13 @@ int main()
 
 	files = (LPWSTR*) malloc(sizeof(LPWSTR));
 	*files = path2;
-	ret = api_mmc.m_lpfnEncodeFile(path,files,1,filters,filtersCount);
+	mediaFiles = (LPWSTR*) malloc(sizeof(LPWSTR));
+	*mediaFiles = path3;
 
+	ret = api_mmc.m_lpfnEncodeFile(path,mediaFiles,1,files,1,filters,filtersCount);
+
+	free(mediaFiles);
+	free(files);
 	api_mmc.m_lpfnUnInit();
 	FreeLibrary(hDll);	
 	system("pause");

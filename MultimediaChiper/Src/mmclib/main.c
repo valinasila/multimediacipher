@@ -275,6 +275,7 @@ int LoadEncodersAPI(HMODULE* dll, EncoderAPI* api)
 	api->m_lpfnGetEncoder			= (getEncoderFn) GetProcAddress(*dll,"GetEncoder");						CHECK_ENC_DLL(api->m_lpfnGetEncoder)
 	api->m_lpfnGetEncoderSignature	= (getEncoderSignatureFn) GetProcAddress(*dll,"GetEncoderSignature");	CHECK_ENC_DLL(api->m_lpfnGetEncoderSignature)
 	api->m_lpfnSetAction			= (setEncoderActionFn) GetProcAddress(*dll,"SetAction");				CHECK_ENC_DLL(api->m_lpfnSetAction)
+	api->m_lpfnSetSourceBuffer		= (setSourceBufferFn) GetProcAddress(*dll,"SetSourceBuffer");			CHECK_ENC_DLL(api->m_lpfnSetSourceBuffer)
 	api->m_lpfnSetBuffer			= (setEncoderBufferFn) GetProcAddress(*dll,"SetBuffer");				CHECK_ENC_DLL(api->m_lpfnSetBuffer)	
 	api->m_lpfnGetBuffer			= (getEncoderBufferFn) GetProcAddress(*dll,"GetBuffer");				CHECK_ENC_DLL(api->m_lpfnGetBuffer)	
 	api->m_lpfnReloadEncoder		= (reloadEncoderFn) GetProcAddress(*dll,"ReloadEncoder");				CHECK_ENC_DLL(api->m_lpfnReloadEncoder)
@@ -326,7 +327,7 @@ FiltersNodePtr GetFilterNode(Filter filter)
 	}
 	return node;
 }
-int EncodeFile(LPCWSTR sourceFile, LPCWSTR* destFiles, int nDestFiles, const Filter* useFilters, int nFilters)
+int EncodeFile(LPCWSTR sourceFile, LPCWSTR* mediaFiles, int nMediaFiles, LPCWSTR* destFiles, int nDestFiles, const Filter* useFilters, int nFilters)
 {
 	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	//	implemented just for nDestFiles = 1
@@ -336,12 +337,18 @@ int EncodeFile(LPCWSTR sourceFile, LPCWSTR* destFiles, int nDestFiles, const Fil
 	FilterStructPtr filterStruct = NULL;
 	FiltersNodePtr	filterNode = NULL;
 	FiltersNodePtr	prevFilterNode = NULL;
+	Encoder	encoder = NULL;
+	int ret = MMC_OK;
 	unsigned char* buffer;
 	unsigned int rb;
 	HANDLE hFile;
 	HANDLE hTemp;
 	WCHAR path[MAX_PATH] = {0};
 	
+	ret = GetEncoderForFile(sourceFile,&encoder);
+	if(MMC_OK != ret)
+		return ret;
+
 	buffer = (unsigned char*) malloc(sizeof(unsigned char) * 1024);
 	if(NULL == buffer)
 		return MMC_READ_FILE_ERROR;
@@ -351,7 +358,10 @@ int EncodeFile(LPCWSTR sourceFile, LPCWSTR* destFiles, int nDestFiles, const Fil
 		filter = *(useFilters + i);
 		filterNode = GetFilterNode(filter);
 		if(NULL == filterNode)
+		{
+			free(buffer);
 			return MMC_WRONG_ARGUMENTS;
+		}
 
 		filterNode->m_API.m_lpfnReloadFilter();
 		filterNode->m_API.m_lpfnSetAction(TRUE);
@@ -361,7 +371,10 @@ int EncodeFile(LPCWSTR sourceFile, LPCWSTR* destFiles, int nDestFiles, const Fil
 			// read buffer from file
 			hFile = CreateFile(sourceFile,GENERIC_READ,FILE_SHARE_READ,NULL,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,NULL);
 			if( INVALID_HANDLE_VALUE == hFile)
+			{
+				free(buffer);
 				return MMC_READ_FILE_ERROR;
+			}
 			
 			if( ! ReadFile(hFile,buffer,1024,&((DWORD)rb),NULL))
 			{
@@ -408,6 +421,7 @@ int EncodeFile(LPCWSTR sourceFile, LPCWSTR* destFiles, int nDestFiles, const Fil
 	{
 		// read buffer from prev filter
 	}
+	free(buffer);
 	return MMC_OK;
 }
 int DecodeFiles(LPCWSTR* sourceFiles, int nSourceFiles)
