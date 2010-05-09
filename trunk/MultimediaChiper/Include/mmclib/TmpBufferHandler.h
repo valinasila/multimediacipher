@@ -12,6 +12,7 @@ ID:            $Id: mmc.h 14 2010-03-14 17:33:19Z claudiu.guiman $
 #define	_TMP_BUFFER_HANDLER_H
 #include "mmclib.h"
 #include "stdio.h"
+#include "common.h"
 
 typedef struct _TmpFileStruct TmpFileStruct,*TmpFileStructPtr;
 struct _TmpFileStruct{
