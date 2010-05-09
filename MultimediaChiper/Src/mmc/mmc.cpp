@@ -73,8 +73,8 @@ void ShowHelp()
 	wprintf(L"      encoders (alternate: -ee) ->prints all available encoders\n");
 	wprintf(L"      filters  (alternate: -ef) ->prints all available filters\n");
 	wprintf(L"-get  [path]	 ->prints available encoder for specific file\n");
-	wprintf(L"-enc [path] /src [paths] /dst [paths] /flt [filters] -> encodes data stored in first path with src paths using filters provided by their uid and saves content in dest paths\n");
-	wprintf(L"-dec [paths] -> decodes files from paths\n");
+	wprintf(L"-enc  (alternate: -encode) [path] /src [paths] /dst [paths] /flt [filters] -> encodes data stored in first path with src paths using filters provided by their uid and saves content in dest paths\n");
+	wprintf(L"-dec	(alternate: -decode) [paths] -> decodes files from paths\n");
 }
 
 void EnumEncoders()
@@ -154,7 +154,9 @@ int Init()
 int _tmain(int argc, _TCHAR* argv[])
 {
 	int i;
+	unsigned int j;
 	LPWSTR tmp = NULL;
+	encodeStructPtr tmpEncode = NULL;
 	
 	if( 0 != Init() )
 		return 1;
@@ -205,6 +207,119 @@ int _tmain(int argc, _TCHAR* argv[])
 				wcscat_s(tmp,MAX_PATH - 1, argv[i] );
 				AddAction(MMC_OPT_GET_ENCODER,tmp);
 			}
+		}
+		else if ( ( wcscmp(argv[i],L"-enc") == 0 ) || ( wcscmp(argv[i],L"-encode") == 0 ))
+		{
+			tmpEncode = (encodeStructPtr) malloc( sizeof(encodeStruct) );
+			tmpEncode->filterList = NULL;
+			tmpEncode->mediaFiles = NULL;
+			tmpEncode->srcPath = NULL;
+			tmpEncode->outFiles = NULL;
+			tmpEncode->nFilterList = 0;
+			tmpEncode->nMediaFiles = 0;
+			tmpEncode->nOutFiles = 0;
+			if( (i + 1) < argc )
+			{
+				i++;
+				tmp = (LPWSTR) malloc(sizeof(WCHAR) * MAX_PATH);
+				*tmp = L'\0';
+				wcscat_s(tmp,MAX_PATH - 1, argv[i] );
+				tmpEncode->srcPath = tmp;
+				if( (i + 1) < argc )
+				{
+					i++;
+					if( ( wcscmp(argv[i],L"/src") == 0 ) )
+					{
+						i++;
+						while( ( i < argc) && ( wcscmp(argv[i],L"/dst") != 0 ) )
+						{
+							tmp = (LPWSTR) malloc(sizeof(WCHAR) * MAX_PATH);
+							*tmp = L'\0';
+							wcscat_s(tmp,MAX_PATH - 1, argv[i] );
+							tmpEncode->nMediaFiles++;					
+							tmpEncode->mediaFiles = (LPWSTR*) realloc(tmpEncode->mediaFiles, sizeof(LPWSTR) * tmpEncode->nMediaFiles );
+							*(tmpEncode->mediaFiles + (tmpEncode->nMediaFiles - 1) ) = tmp;  
+							i++;
+						}
+						if( i >= argc)
+						{
+							for(j = 0; j < tmpEncode->nMediaFiles; j++)
+								free( *(tmpEncode->mediaFiles + j ) );
+
+							free(tmpEncode->mediaFiles);
+							free(tmpEncode->srcPath);
+							free(tmpEncode);
+							tmpEncode = NULL;
+						}
+						else
+						{
+							while( ( i < argc) && ( wcscmp(argv[i],L"/flt") != 0 ) )
+							{
+								tmp = (LPWSTR) malloc(sizeof(WCHAR) * MAX_PATH);
+								*tmp = L'\0';
+								wcscat_s(tmp,MAX_PATH - 1, argv[i] );
+								tmpEncode->nOutFiles++;					
+								tmpEncode->OutFiles = (LPWSTR*) realloc(tmpEncode->OutFiles, sizeof(LPWSTR) * tmpEncode->nOutFiles);
+								*(tmpEncode->OutFiles + (tmpEncode->nOutFiles - 1) ) = tmp;  
+								i++;
+							}
+							if(tmpEncode->nOutFiles == 0)
+							{
+								for(j = 0; j < tmpEncode->nMediaFiles; j++)
+									free( *(tmpEncode->mediaFiles + j ) );
+
+								free(tmpEncode->mediaFiles);
+								free(tmpEncode->srcPath);
+								free(tmpEncode);
+								tmpEncode = NULL;
+							}
+							else
+							{
+								if( (i + 1) < argc)
+								{
+									i++;
+									while( ( i < argc) && ( argv[i][0] != L"-" ) )
+									{								
+										tmpEncode->nFilterList++;				
+										for(j = 0; j <filterListSize; j++)
+										{
+											if( ((FilterStruct) *(filterList + j) ).m_ulUid == _wtoi64(argv[i])  )
+											{
+												tmpEncode->FilterList = (Filter*) realloc(tmpEncode->FilterList, sizeof(Filter) * tmpEncode->nFilterList);
+												*(tmpEncode->FilterList + (tmpEncode->nFilterList - 1) ) = *(filterList + j);  
+												break;
+											}
+										}
+										i++;
+									}
+								}
+								AddAction(MMC_OPT_ENCODE,tmpEncode);
+							}
+						}
+					}
+					else
+					{
+						free(tmpEncode->srcPath);
+						free(tmpEncode);
+						tmpEncode = NULL;
+					}
+				}
+				else
+				{
+					free(tmpEncode->srcPath);
+					free(tmpEncode);
+					tmpEncode = NULL;
+				}
+			}
+			else
+			{
+				free(tmpEncode);
+				tmpEncode = NULL;
+			}
+		}
+		else if ( ( wcscmp(argv[i],L"-dec") == 0 ) || ( wcscmp(argv[i],L"-decode") == 0 ))
+		{
+			
 		}
 	}
 	

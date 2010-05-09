@@ -28,6 +28,16 @@ typedef enum _mmcOption {
 	MMC_OPT_DECODE
 } MMCOption;
 
+typedef struct _encodeStruct encodeStruct, *encodeStructPtr;
+struct _encodeStruct{
+	LPWSTR					srcPath;
+	LPWSTR*					mediaFiles;
+	unsigned int			nMediaFiles;
+	Filter*					filterList;
+	unsigned int			nFilterList;
+	LPWSTR*					outFiles;
+	unsigned int			nOutFiles;
+};
 
 typedef struct _mmcAction mmcAction, *mmcActionPtr;
 struct _mmcAction {
