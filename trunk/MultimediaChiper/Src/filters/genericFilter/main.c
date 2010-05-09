@@ -38,7 +38,9 @@ Filter GetFilter()
 }
 FilterRet UnInit()
 {
-	m_lpfnCloseTempBuffer( (Filter) m_pInternalStruct);
+	if(NULL != pTmpApi->m_lpfnDropTempHandle)
+		pTmpApi->m_lpfnDropTempHandle(bufferHandle);
+
 	if(m_pInternalStruct)
 	{
 		free(m_pInternalStruct->m_szName);
@@ -48,19 +50,15 @@ FilterRet UnInit()
 	}	
 	return FIL_RET_OK;
 }
-FilterRet SetSaveTempBufferFn(saveTempBufferFn func)
+FilterRet SetTempFn(TempHandlerAPIPtr api)
 {
-	m_lpfnSaveTempBuffer = func;
-	return FIL_RET_OK;
-}
-FilterRet SetGetTempBufferFn(getTempBufferFn func)
-{
-	m_lpfnGetTempBuffer = func;
-	return FIL_RET_OK;
-}
-FilterRet SetCloseTempBufferFn(closeTempBufferFn func)
-{
-	m_lpfnCloseTempBuffer = func;
+	pTmpApi = api; 
+
+	if(NULL == pTmpApi->m_lpfnGetTempHandle)
+		return FIL_RET_WrongArgument;
+
+	pTmpApi->m_lpfnGetTempHandle(&bufferHandle);
+
 	return FIL_RET_OK;
 }
 FilterRet SetFilterAction(int bFilter)
@@ -70,20 +68,20 @@ FilterRet SetFilterAction(int bFilter)
 }
 FilterRet SetFilterBuffer(const unsigned char* buffer,unsigned int bufferSize,int bLastBuffer)
 {
-	if(NULL == m_lpfnSaveTempBuffer)
+	if(NULL == pTmpApi->m_lpfnSaveTempBuffer)
 		return FIL_RET_WrongArgument;
 
-	if( 0 != m_lpfnSaveTempBuffer( (Filter) m_pInternalStruct, buffer, bufferSize) )
+	if( 0 != pTmpApi->m_lpfnSaveTempBuffer( bufferHandle, buffer, bufferSize) )
 		return FIL_RET_UnknownError;
 
 	return FIL_RET_OK;
 }
 FilterRet GetFilterBuffer(unsigned char* buffer,unsigned int bufferSize,unsigned int* bytesWrote)
 {
-	if(NULL == m_lpfnGetTempBuffer)
+	if(NULL == pTmpApi->m_lpfnGetTempBuffer)
 		return FIL_RET_WrongArgument;
 
-	if( 0 != m_lpfnGetTempBuffer( (Filter) m_pInternalStruct, buffer,bufferSize,bytesWrote) )
+	if( 0 != pTmpApi->m_lpfnGetTempBuffer( bufferHandle, buffer,bufferSize,bytesWrote) )
 		return FIL_RET_UnknownError;
 
 	return FIL_RET_OK;
@@ -94,6 +92,6 @@ FilterRet SetFilterInputBuffer(unsigned char* buffer, unsigned int bufferSize)
 }
 FilterRet ReloadFilter()
 {
-	m_lpfnCloseTempBuffer( (Filter) m_pInternalStruct);
+	pTmpApi->m_lpfnCloseTempHandle( bufferHandle);
 	return FIL_RET_OK;
 }

@@ -10,6 +10,7 @@ ID:            $Id$
 */
 #include "TmpBufferhandler.h"
 
+int maxId = 0;
 TmpFileStructPtr fileList = NULL;
 
 int InitTempBufferHandler()
@@ -17,37 +18,51 @@ int InitTempBufferHandler()
 	fileList = NULL;
 	return 0;
 }
-int SaveTempBuffer(Filter fltr,const unsigned char* buffer, unsigned int bufferSize)
+int GetNewTempHandle(TempHandle* hndl)
+{
+	TmpHandleStructPtr p = (TmpHandleStructPtr) malloc( sizeof(TmpHandleStruct) );
+	maxId++;
+	p->id = maxId;
+	*hndl = p;
+	return 0;
+
+}
+int DropTempHandle(TempHandle hndl)
+{
+	free(hndl);
+	return 0;
+}
+int SaveTempBuffer(TempHandle hndl,const unsigned char* buffer, unsigned int bufferSize)
 {
 	TmpFileStructPtr node = fileList;
 	DWORD bw;
 
 	while(node)
 	{
-		if(node->m_pFlt == fltr)
+		if(node->hndl == hndl)
 			break;
 		node = node->m_pNext;
 	}
 	if(NULL == node) // create file
 	{
 		WCHAR path[MAX_PATH] = {0};
-		HANDLE* hndl = (HANDLE*) malloc(sizeof(HANDLE));
+		HANDLE* hFile = (HANDLE*) malloc(sizeof(HANDLE));
 		node = (TmpFileStructPtr) malloc(sizeof(TmpFileStruct));
-		node->m_pFlt = fltr;
+		node->hndl = hndl;
 		node->bFirstRead = TRUE;
 		fileList = node;
 		CreateDirectory(L"temp",NULL);
-		_snwprintf_s(path,MAX_PATH,MAX_PATH - 1,L"temp\\filter_%lld.tmp",((FilterStructPtr) fltr)->m_ulUid);		
+		_snwprintf_s(path,MAX_PATH,MAX_PATH - 1,L"temp\\tmp_%d.tmp",((TmpHandleStructPtr) hndl)->id);		
 
-		*hndl = CreateFile(path,GENERIC_READ | GENERIC_WRITE,0,NULL,CREATE_ALWAYS,FILE_ATTRIBUTE_TEMPORARY|FILE_FLAG_DELETE_ON_CLOSE,NULL);
+		*hFile = CreateFile(path,GENERIC_READ | GENERIC_WRITE,0,NULL,CREATE_ALWAYS,FILE_ATTRIBUTE_TEMPORARY|FILE_FLAG_DELETE_ON_CLOSE,NULL);
 
-		if(INVALID_HANDLE_VALUE == *hndl)
+		if(INVALID_HANDLE_VALUE == *hFile)
 		{
 			free(node);
-			free(hndl);
+			free(hFile);
 			return -1;
 		}
-		node->m_pHFile = hndl;
+		node->m_pHFile = hFile;
 
 		node->m_pNext = fileList;
 	}
@@ -57,12 +72,12 @@ int SaveTempBuffer(Filter fltr,const unsigned char* buffer, unsigned int bufferS
 		return -2;
 	return 0;
 }
-int GetTempBuffer(Filter fltr,unsigned char* buffer, unsigned int bufferSize, unsigned int* bytesWrote)
+int GetTempBuffer(TempHandle hndl,unsigned char* buffer, unsigned int bufferSize, unsigned int* bytesWrote)
 {
 	TmpFileStructPtr node = fileList;	
 	while(node)
 	{
-		if(node->m_pFlt == fltr)
+		if(node->hndl == hndl)
 			break;
 		node = node->m_pNext;
 	}
@@ -79,14 +94,14 @@ int GetTempBuffer(Filter fltr,unsigned char* buffer, unsigned int bufferSize, un
 		return -3;
 	return 0;
 }
-int CloseTempBuffer(Filter fltr)
+int CloseTempBuffer(TempHandle hndl)
 {
 	TmpFileStructPtr node;	
 	TmpFileStructPtr prev = NULL;
 	node = fileList;
 	while(node)
 	{		
-		if( node->m_pFlt == fltr )
+		if( node->hndl == hndl )
 			break;
 		prev = node;
 		node = node->m_pNext;
@@ -104,11 +119,11 @@ int CloseTempBuffer(Filter fltr)
 	free(node);
 	return 0;
 }
-int UnInitTempBufferhandler()
+int UnInitTempBufferHandler()
 {
 	while(NULL != fileList)
 	{
-		CloseTempBuffer(fileList->m_pFlt);
+		CloseTempBuffer(fileList->hndl);		
 	}
 	return 0;
 }

@@ -9,10 +9,19 @@ ID:						$Id$
 =================================================================================================
 */
 #include "mmc.h"
+TempHandlerAPI tmpBufHandler;
 
 int Init()
 {
 	int ret;
+	
+	tmpBufHandler.m_lpfnCloseTempHandle = &CloseTempBuffer;
+	tmpBufHandler.m_lpfnDropTempHandle =  &DropTempHandle;
+	tmpBufHandler.m_lpfnGetTempBuffer =  &GetTempBuffer;
+	tmpBufHandler.m_lpfnGetTempHandle = &GetNewTempHandle;
+	tmpBufHandler.m_lpfnSaveTempBuffer = &SaveTempBuffer;
+	InitTempBufferHandler();
+
 	ret = ChangeEncodersFolder(DEFAULT_ENCODERS_DIR);
 	if(ret != MMC_OK)
 		return ret;
@@ -33,6 +42,7 @@ int UnInit()
 
 	ReleaseEncoders();
 	ReleaseFilters();
+	UnInitTempBufferHandler();
 	return MMC_OK;
 }
 int ChangeEncodersFolder(LPCWSTR path)
@@ -209,9 +219,7 @@ int ScanFilters()
 			else
 			{
 				node->m_API.m_lpfnInit();
-				node->m_API.m_lpfnSetSaveTempBufferFn(SaveTempBuffer);
-				node->m_API.m_lpfnSetGetTempBufferFn(GetTempBuffer);
-				node->m_API.m_lpfnSetCloseTempBufferFn(CloseTempBuffer);
+				node->m_API.m_lpfnSetTempFn(&tmpBufHandler);				
 				node->m_pFilter = node->m_API.m_lpfnGetFilter();
 				m_Filters = (Filter*) realloc(m_Filters, sizeof(Filter) * (FiltersSize + 1) );
 				if(! m_Filters)
@@ -291,9 +299,7 @@ int LoadFiltersAPI(HMODULE* dll, FilterAPI* api)
 	api->m_lpfnInit			= (initFilterFn) GetProcAddress(*dll,"Init");		CHECK_FIL_DLL(api->m_lpfnInit)
 	api->m_lpfnUnInit		= (uninitFilterFn) GetProcAddress(*dll,"UnInit");	CHECK_FIL_DLL(api->m_lpfnUnInit)
 	api->m_lpfnGetFilter	= (getFilterFn) GetProcAddress(*dll,"GetFilter");	CHECK_FIL_DLL(api->m_lpfnGetFilter)
-	api->m_lpfnSetSaveTempBufferFn	= (setSaveTempBufferFn) GetProcAddress(*dll,"SetSaveTempBufferFn");	CHECK_FIL_DLL(api->m_lpfnSetSaveTempBufferFn)
-	api->m_lpfnSetGetTempBufferFn	= (setGetTempBufferFn) GetProcAddress(*dll,"SetGetTempBufferFn");	CHECK_FIL_DLL(api->m_lpfnSetGetTempBufferFn)
-	api->m_lpfnSetCloseTempBufferFn	= (setCloseTempBufferFn) GetProcAddress(*dll,"SetCloseTempBufferFn");	CHECK_FIL_DLL(api->m_lpfnSetCloseTempBufferFn)
+	api->m_lpfnSetTempFn	= (setTempFn) GetProcAddress(*dll,"SetTempFn");		CHECK_FIL_DLL(api->m_lpfnSetTempFn)	
 	api->m_lpfnSetAction	= (setFilterActionFn) GetProcAddress(*dll,"SetFilterAction");	CHECK_FIL_DLL(api->m_lpfnSetAction)
 	api->m_lpfnSetBuffer	= (setFilterBufferFn) GetProcAddress(*dll,"SetFilterBuffer");	CHECK_FIL_DLL(api->m_lpfnSetBuffer)
 	api->m_lpfnGetBuffer	= (getFilterBufferFn) GetProcAddress(*dll,"GetFilterBuffer");	CHECK_FIL_DLL(api->m_lpfnGetBuffer)
