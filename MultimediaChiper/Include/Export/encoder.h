@@ -19,6 +19,7 @@ ID:            $Id$
 # endif// __cplusplus
 
 #include <windows.h>
+#include "common.h"
 
 typedef void* Encoder;
 typedef struct _encoderStruct EncoderStruct, * EncoderStructPtr;
@@ -44,21 +45,53 @@ typedef enum _encoderRet {
 	ENC_RET_Insuficient_Size	= -701
 } EncoderRet;
 
+
+/********************************************//**
+       * Checks if the library is correctly loaded
+       * @return ENC_RET_IsEncoder if everything is ok
+ ***********************************************/
 API_EXPORT EncoderRet IsEncoder();
+/**	*@see IsEncoder	*/
 typedef EncoderRet (*isEncoderFn)();
 
+
+/********************************************//**
+       * Init
+       * @return ENC_RET_OK if everything is ok
+ ***********************************************/
 API_EXPORT EncoderRet Init();
 typedef EncoderRet (*initEncoderFn)();
 
+
+/********************************************//**
+       * Get pointer to encoder struct      
+	   * @return pointer to encoder. Must check if return value is NULL
+ ***********************************************/
 API_EXPORT Encoder GetEncoder();
 typedef Encoder (*getEncoderFn) ();
 
+
+/********************************************//**
+       * UnInit       
+	   * @return ENC_RET_OK if all is ok
+ ***********************************************/
 API_EXPORT EncoderRet UnInit();
 typedef EncoderRet (*uninitEncoderFn) ();
 
+
+/********************************************//**
+       * Get encoder signature     
+	   * @return pointer to encoder signature
+ ***********************************************/
 API_EXPORT EncoderSignaturePtr GetEncoderSignature();
 typedef EncoderSignaturePtr (*getEncoderSignatureFn)();
 
+
+/********************************************//**
+       * Set encoder action
+       * @param [in] bEncode 	   
+	   * @return ENC_RET_OK  if all is ok
+ ***********************************************/ 
 API_EXPORT EncoderRet SetAction(int bEncode);
 typedef EncoderRet (*setEncoderActionFn)(int);
 
