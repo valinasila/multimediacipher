@@ -8,7 +8,7 @@ Last changed date:    $Date$
 ID:            $Id$
 =================================================================================================
 */
-#include "TmpBufferhandler.h"
+#include "TmpBufferHandler.h"
 
 int maxId = 0;
 TmpFileStructPtr fileList = NULL;

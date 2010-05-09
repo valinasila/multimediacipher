@@ -113,3 +113,7 @@ EncoderRet GetBuffer(unsigned char* buffer, unsigned int bufferSize,unsigned int
 	memcpy(buffer,tempBuffer,*bytesWrote);
 	return ENC_RET_OK;
 }
+EncoderRet SetTempFn(TempHandlerAPIPtr api)
+{
+	return ENC_RET_OK;
+}

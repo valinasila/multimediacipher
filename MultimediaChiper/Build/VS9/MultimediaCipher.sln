@@ -31,6 +31,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "genericFilter", "filters\ge
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BMPEncoder", "encoders\BMPEncoder\BMPEncoder.vcproj", "{956B57DB-2121-477D-A1CF-10011A7DBE43}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mmc", "mmc\mmc.vcproj", "{4695A284-09CE-4967-94B4-8813F4A3B106}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -57,6 +59,10 @@ Global
 		{956B57DB-2121-477D-A1CF-10011A7DBE43}.Debug|Win32.Build.0 = Debug|Win32
 		{956B57DB-2121-477D-A1CF-10011A7DBE43}.Release|Win32.ActiveCfg = Release|Win32
 		{956B57DB-2121-477D-A1CF-10011A7DBE43}.Release|Win32.Build.0 = Release|Win32
+		{4695A284-09CE-4967-94B4-8813F4A3B106}.Debug|Win32.ActiveCfg = Debug|Win32
+		{4695A284-09CE-4967-94B4-8813F4A3B106}.Debug|Win32.Build.0 = Debug|Win32
+		{4695A284-09CE-4967-94B4-8813F4A3B106}.Release|Win32.ActiveCfg = Release|Win32
+		{4695A284-09CE-4967-94B4-8813F4A3B106}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

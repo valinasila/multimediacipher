@@ -11,3 +11,4 @@ EXPORTS
 	SetBuffer				@8
 	GetBuffer				@9
 	ReloadEncoder			@10
+	SetTempFn				@11
