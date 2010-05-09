@@ -45,7 +45,7 @@
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;GENERICENCODER_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="3"
+				RuntimeLibrary="1"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				DebugInformationFormat="4"
@@ -74,6 +74,7 @@
 			/>
 			<Tool
 				Name="VCManifestTool"
+				AdditionalOptions="/validate_manifest"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -120,7 +121,7 @@
 				EnableIntrinsicFunctions="true"
 				AdditionalIncludeDirectories="..\..\..\..\Include\Export;..\..\..\..\Include\encoders\genericEncoder"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;GENERICENCODER_EXPORTS"
-				RuntimeLibrary="2"
+				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
@@ -152,6 +153,7 @@
 			/>
 			<Tool
 				Name="VCManifestTool"
+				AdditionalOptions="/validate_manifest"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"

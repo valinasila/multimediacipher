@@ -7,6 +7,7 @@ EXPORTS
 	UnInit					@4
 	GetEncoderSignature		@5
 	SetAction				@6
-	SetBuffer				@7
-	GetBuffer				@8
-	ReloadEncoder			@9
+	SetSourceBuffer			@7
+	SetBuffer				@8
+	GetBuffer				@9
+	ReloadEncoder			@10

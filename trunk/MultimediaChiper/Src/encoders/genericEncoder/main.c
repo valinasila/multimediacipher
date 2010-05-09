@@ -84,6 +84,10 @@ EncoderRet SetAction(int bEncode)
 	m_bEncode = bEncode;
 	return ENC_RET_OK;
 }
+EncoderRet SetSourceBuffer(const unsigned char* buffer, unsigned int bufferSize)
+{
+	return ENC_RET_OK;
+}
 EncoderRet SetBuffer(const unsigned char* buffer, unsigned int bufferSize)
 {	
 	if(bufferSize > tempBufferSize)

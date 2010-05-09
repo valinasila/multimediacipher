@@ -19,7 +19,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tester", "tester\tester.vcp
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Export", "Export", "{9532CE17-C89B-49EB-8086-D0BEAEEE1E0E}"
 	ProjectSection(SolutionItems) = preProject
-		..\..\Include\Export\Buffer.h = ..\..\Include\Export\Buffer.h
 		..\..\Include\Export\encoder.h = ..\..\Include\Export\encoder.h
 		..\..\Include\Export\filter.h = ..\..\Include\Export\filter.h
 		..\..\Include\Export\mmclib.h = ..\..\Include\Export\mmclib.h
