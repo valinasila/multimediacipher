@@ -79,37 +79,13 @@ typedef FilterRet (*uninitFilterFn) ();
 
 
 /********************************************//**
-       * Sets pointer to SaveTempBuffer function
-       * @param [in] func  Pointer to SaveTempBuffer()  
-	   * @see saveTempBufferFn
+       * Set functions to temporary buffer handler
+       * @param [in] api   
 	   * @return FIL_RET_OK if all is ok
  ***********************************************/
-API_EXPORT FilterRet SetSaveTempBufferFn(saveTempBufferFn func);
-/**	*@see SetSaveTempBufferFn	*/
-typedef  FilterRet (*setSaveTempBufferFn) (saveTempBufferFn);
-
-
-/********************************************//**
-       * Sets pointer to GetTempBuffer function
-       * @param [in] func  Pointer to GetTempBuffer()
-	   * @see getTempBufferFn
-	   * @return FIL_RET_OK if all is ok
- ***********************************************/
-API_EXPORT FilterRet SetGetTempBufferFn(getTempBufferFn func);
-/**	*@see SetGetTempBufferFn	*/
-typedef FilterRet (*setGetTempBufferFn) (getTempBufferFn);
-
-
-/********************************************//**
-       * Sets pointer to CloseTempBuffer function
-       * @param [in] func  Pointer to CloseTempBuffer()	
-	   * @see closeTempBufferFn
-	   * @return FIL_RET_OK if all is ok
- ***********************************************/ 
-API_EXPORT FilterRet SetCloseTempBufferFn(closeTempBufferFn func);
-/**	*@see SetCloseTempBufferFn */
-typedef FilterRet (*setCloseTempBufferFn)(closeTempBufferFn);
-
+API_EXPORT FilterRet SetTempFn(TempHandlerAPIPtr api);
+/**	*@see SetTempFn	*/
+typedef  FilterRet (*setTempFn) (TempHandlerAPIPtr);
 
 /********************************************//**
        * Set filter action
@@ -178,9 +154,7 @@ typedef struct _filterAPI{
 	initFilterFn			m_lpfnInit;
 	getFilterFn				m_lpfnGetFilter;
 	uninitFilterFn			m_lpfnUnInit;
-	setSaveTempBufferFn		m_lpfnSetSaveTempBufferFn;
-	setGetTempBufferFn		m_lpfnSetGetTempBufferFn;
-	setCloseTempBufferFn	m_lpfnSetCloseTempBufferFn;
+	setTempFn				m_lpfnSetTempFn;	
 	setFilterActionFn		m_lpfnSetAction;
 	setFilterBufferFn		m_lpfnSetBuffer;
 	getFilterBufferFn		m_lpfnGetBuffer;

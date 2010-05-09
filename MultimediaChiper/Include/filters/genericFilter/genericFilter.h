@@ -17,7 +17,6 @@ ID:            $Id$
 #define FILTER_USE_INPUT FALSE
 
 FilterStructPtr m_pInternalStruct = NULL;
-saveTempBufferFn	m_lpfnSaveTempBuffer = NULL;
-getTempBufferFn		m_lpfnGetTempBuffer = NULL;
-closeTempBufferFn	m_lpfnCloseTempBuffer = NULL;
+TempHandlerAPIPtr pTmpApi = NULL;
+TempHandle	bufferHandle = NULL;
 int m_bActionFilter = TRUE;
