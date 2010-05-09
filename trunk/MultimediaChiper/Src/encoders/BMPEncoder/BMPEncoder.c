@@ -84,3 +84,7 @@ EncoderRet ReloadEncoder()
 {
 	return ENC_RET_OK;
 }
+EncoderRet SetTempFn(TempHandlerAPIPtr api)
+{
+	return ENC_RET_OK;
+}

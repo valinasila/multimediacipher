@@ -149,6 +149,7 @@ int ScanEncoders()
 			else
 			{
 				node->m_API.m_lpfnInit();
+				node->m_API.m_lpfnSetTempFn(&tmpBufHandler);
 				node->m_pEncoder = node->m_API.m_lpfnGetEncoder();
 				m_Encoders = (Encoder*) realloc(m_Encoders, sizeof(Encoder) * (EncodersSize + 1) );
 				if(! m_Encoders)
@@ -287,6 +288,7 @@ int LoadEncodersAPI(HMODULE* dll, EncoderAPI* api)
 	api->m_lpfnSetBuffer			= (setEncoderBufferFn) GetProcAddress(*dll,"SetBuffer");				CHECK_ENC_DLL(api->m_lpfnSetBuffer)	
 	api->m_lpfnGetBuffer			= (getEncoderBufferFn) GetProcAddress(*dll,"GetBuffer");				CHECK_ENC_DLL(api->m_lpfnGetBuffer)	
 	api->m_lpfnReloadEncoder		= (reloadEncoderFn) GetProcAddress(*dll,"ReloadEncoder");				CHECK_ENC_DLL(api->m_lpfnReloadEncoder)
+	api->m_lpfnSetTempFn			= (setEncTempFn) GetProcAddress(*dll,"SetTempFn");						CHECK_ENC_DLL(api->m_lpfnSetTempFn)
 	if(ENC_RET_IsEncoder  != api->m_lpfnIsEncoder() )
 		return MMC_WRONG_ENCODER_LIBRARY;
 	

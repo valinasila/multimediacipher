@@ -13,7 +13,6 @@ ID:            $Id$
 
 #include <windows.h>
 
-// these 3 funcs templates are used by mmclib to store temporary information for filters 
 typedef void* TempHandle;
 
 typedef int (*getTempHandleFn) (TempHandle*);

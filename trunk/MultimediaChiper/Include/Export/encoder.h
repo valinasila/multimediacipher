@@ -24,11 +24,11 @@ ID:            $Id$
 typedef void* Encoder;
 typedef struct _encoderStruct EncoderStruct, * EncoderStructPtr;
 struct _encoderStruct {
-	EncoderStructPtr	m_pThis;
-	LPWSTR				m_szName;
-	LPWSTR				m_szVersion;	
-	LPWSTR				m_szType;	
-	unsigned long long	m_ulUid;
+	EncoderStructPtr	m_pThis;		/*!< pointer to self */
+	LPWSTR				m_szName;		/*!< encoder name */
+	LPWSTR				m_szVersion;	/*!< encoder version */
+	LPWSTR				m_szType;		/*!< encoder type*/
+	unsigned long long	m_ulUid;		/*!< encoder GUID */
 };
 typedef struct _encoderSignature EncoderSignature, *EncoderSignaturePtr;
 struct _encoderSignature{
@@ -60,6 +60,7 @@ typedef EncoderRet (*isEncoderFn)();
        * @return ENC_RET_OK if everything is ok
  ***********************************************/
 API_EXPORT EncoderRet Init();
+/**	*@see Init	*/
 typedef EncoderRet (*initEncoderFn)();
 
 
@@ -68,6 +69,7 @@ typedef EncoderRet (*initEncoderFn)();
 	   * @return pointer to encoder. Must check if return value is NULL
  ***********************************************/
 API_EXPORT Encoder GetEncoder();
+/**	*@see GetEncoder	*/
 typedef Encoder (*getEncoderFn) ();
 
 
@@ -76,6 +78,7 @@ typedef Encoder (*getEncoderFn) ();
 	   * @return ENC_RET_OK if all is ok
  ***********************************************/
 API_EXPORT EncoderRet UnInit();
+/**	*@see UnInit */
 typedef EncoderRet (*uninitEncoderFn) ();
 
 
@@ -84,6 +87,7 @@ typedef EncoderRet (*uninitEncoderFn) ();
 	   * @return pointer to encoder signature
  ***********************************************/
 API_EXPORT EncoderSignaturePtr GetEncoderSignature();
+/**	*@see GetEncoderSignature */
 typedef EncoderSignaturePtr (*getEncoderSignatureFn)();
 
 
@@ -93,19 +97,65 @@ typedef EncoderSignaturePtr (*getEncoderSignatureFn)();
 	   * @return ENC_RET_OK  if all is ok
  ***********************************************/ 
 API_EXPORT EncoderRet SetAction(int bEncode);
+/**	*@see SetAction */
 typedef EncoderRet (*setEncoderActionFn)(int);
 
+
+/********************************************//**
+       * Set source buffer.
+	   * mmclib will send the source to be encoded before sending the media source
+	   * This source can be first filtered.
+       * @param [in] buffer	   
+	   * @param [in] bufferSize 
+	   * @return ENC_RET_OK  if all is ok
+ ***********************************************/ 
 API_EXPORT EncoderRet SetSourceBuffer(const unsigned char* buffer, unsigned int bufferSize);
+/**	*@see SetSourceBuffer */
 typedef	EncoderRet (*setSourceBufferFn)(const unsigned char*,unsigned int);
 
+/********************************************//**
+       * Set media source.
+	   * mmclib will alternate SetBuffer with GetBuffer
+       * @param [in] buffer	   
+	   * @param [in] bufferSize 
+	   * @return ENC_RET_OK  if all is ok
+ ***********************************************/ 
 API_EXPORT EncoderRet SetBuffer(const unsigned char* buffer, unsigned int bufferSize);
+/**	*@see SetBuffer */
 typedef	EncoderRet (*setEncoderBufferFn)(const unsigned char*,unsigned int);
 
+
+/********************************************//**
+       * Get media source.
+	   * mmclib will alternate SetBuffer with GetBuffer
+       * @param [in] buffer	   
+	   * @param [in] bufferSize 
+	   * @return ENC_RET_OK  if all is ok
+ ***********************************************/ 
 API_EXPORT EncoderRet GetBuffer(unsigned char* buffer, unsigned int bufferSize,unsigned int* bytesWrote);
+/**	*@see GetBuffer */
 typedef	EncoderRet (*getEncoderBufferFn)(const unsigned char*,unsigned int,unsigned int*);
 
+
+/********************************************//**
+       * Resets the encoder
+	   * On each new encoding action, mmclib will call this function       
+	   * @return ENC_RET_OK  if all is ok
+ ***********************************************/ 
 API_EXPORT EncoderRet ReloadEncoder();
+/**	*@see ReloadEncoder( */
 typedef EncoderRet (*reloadEncoderFn) ();
+
+
+/********************************************//**
+       * Set functions to temporary buffer handler
+       * @param [in] api   
+	   * @return ENC_RET_OK if all is ok
+ ***********************************************/
+API_EXPORT EncoderRet SetTempFn(TempHandlerAPIPtr api);
+/**	*@see SetTempFn	*/
+typedef  EncoderRet (*setEncTempFn) (TempHandlerAPIPtr);
+
 
 typedef struct _encoderAPI{
 	isEncoderFn				m_lpfnIsEncoder	;	
@@ -118,5 +168,6 @@ typedef struct _encoderAPI{
 	setEncoderBufferFn		m_lpfnSetBuffer;	
 	getEncoderBufferFn		m_lpfnGetBuffer;
 	reloadEncoderFn			m_lpfnReloadEncoder;
+	setEncTempFn			m_lpfnSetTempFn;
 } EncoderAPI;
 #endif
