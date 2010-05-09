@@ -2,10 +2,10 @@
 =================================================================================================
 Filename: BMPEncoder.h
 Desciption: 
-Author: $Author: claudiu.guiman $
-Last changed by:    $Author: claudiu.guiman $
-Last changed date:    $Date: 2010-03-14 19:33:19 +0200 (D, 14 mar. 2010) $
-ID:            $Id: genericEncoder.h 14 2010-03-14 17:33:19Z claudiu.guiman $
+Author: $Author$
+Last changed by:    $Author$
+Last changed date:    $Date$
+ID:            $Id$
 =================================================================================================
 */
 
