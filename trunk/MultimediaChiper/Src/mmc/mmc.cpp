@@ -328,7 +328,7 @@ int _tmain(int argc, _TCHAR* argv[])
 								if( (i + 1) < argc)
 								{
 									i++;
-									while( ( i < argc) && ( argv[i+1][0] != L'-' ) )
+									while( ( i < argc) && ( argv[i][0] != L'-' ) )
 									{								
 										tmpEncode->nFilterList++;				
 										for(j = 0; j <filterListSize; j++)
