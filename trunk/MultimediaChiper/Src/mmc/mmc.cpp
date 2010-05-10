@@ -47,10 +47,51 @@ int AddAction(MMCOption opt, void* target)
 int RemoveHeadAction()
 {
 	mmcActionPtr node = actions;
+	encodeStructPtr tmpEncodeStruct = NULL;
+	unsigned int i = 0;
 	if(NULL != actions)
 	{		
-		if(NULL != actions->m_pTarget)
-			free(actions->m_pTarget);
+		if(MMC_OPT_ENCODE == actions->opt)
+		{	
+			tmpEncodeStruct = (encodeStructPtr) actions->m_pTarget;
+
+			if(NULL == tmpEncodeStruct)
+			{
+				actions = actions->m_pNext;
+				free(node);
+				return 0;
+			}
+			if(NULL != tmpEncodeStruct->srcPath)
+				free(tmpEncodeStruct->srcPath);
+			if(NULL != tmpEncodeStruct->filterList)
+			{
+				free(tmpEncodeStruct->filterList);
+				tmpEncodeStruct->nFilterList = 0;
+			}
+			if(NULL != tmpEncodeStruct->mediaFiles)
+			{
+				for(i = 0 ; i < tmpEncodeStruct->nMediaFiles; i++)
+					free( *(tmpEncodeStruct->mediaFiles + i) );
+				free(tmpEncodeStruct->mediaFiles);
+				tmpEncodeStruct->nMediaFiles = 0;
+			}
+			if(NULL != tmpEncodeStruct->outFiles)
+			{
+				for(i = 0; i < tmpEncodeStruct->nOutFiles; i++)
+					free( *(tmpEncodeStruct->outFiles + i) );
+				free(tmpEncodeStruct->outFiles);
+				tmpEncodeStruct->nOutFiles = 0;
+			}
+
+			free(tmpEncodeStruct);
+			
+			
+		}
+		else
+		{
+			if(NULL != actions->m_pTarget)
+				free(actions->m_pTarget);
+		}
 
 		actions = actions->m_pNext;
 		free(node);
@@ -150,6 +191,14 @@ int Init()
 }
 
 
+
+
+void Encode(encodeStructPtr p)
+{
+	wprintf(L"----------------------------------------------------------------------------\n");
+
+	wprintf(L"----------------------------------------------------------------------------\n\n");
+}
 
 int _tmain(int argc, _TCHAR* argv[])
 {
@@ -259,8 +308,8 @@ int _tmain(int argc, _TCHAR* argv[])
 								*tmp = L'\0';
 								wcscat_s(tmp,MAX_PATH - 1, argv[i] );
 								tmpEncode->nOutFiles++;					
-								tmpEncode->OutFiles = (LPWSTR*) realloc(tmpEncode->OutFiles, sizeof(LPWSTR) * tmpEncode->nOutFiles);
-								*(tmpEncode->OutFiles + (tmpEncode->nOutFiles - 1) ) = tmp;  
+								tmpEncode->outFiles = (LPWSTR*) realloc(tmpEncode->outFiles, sizeof(LPWSTR*) * tmpEncode->nOutFiles);
+								*(tmpEncode->outFiles + (tmpEncode->nOutFiles - 1) ) = tmp;  
 								i++;
 							}
 							if(tmpEncode->nOutFiles == 0)
@@ -278,15 +327,15 @@ int _tmain(int argc, _TCHAR* argv[])
 								if( (i + 1) < argc)
 								{
 									i++;
-									while( ( i < argc) && ( argv[i][0] != L"-" ) )
+									while( ( i < argc) && ( argv[i][0] != L'-' ) )
 									{								
 										tmpEncode->nFilterList++;				
 										for(j = 0; j <filterListSize; j++)
 										{
-											if( ((FilterStruct) *(filterList + j) ).m_ulUid == _wtoi64(argv[i])  )
+											if( ((FilterStructPtr) *(filterList + j) )->m_ulUid == _wtoi64(argv[i])  )
 											{
-												tmpEncode->FilterList = (Filter*) realloc(tmpEncode->FilterList, sizeof(Filter) * tmpEncode->nFilterList);
-												*(tmpEncode->FilterList + (tmpEncode->nFilterList - 1) ) = *(filterList + j);  
+												tmpEncode->filterList = (Filter*) realloc(tmpEncode->filterList, sizeof(Filter) * tmpEncode->nFilterList);
+												*(tmpEncode->filterList + (tmpEncode->nFilterList - 1) ) = *(filterList + j);  
 												break;
 											}
 										}
@@ -332,6 +381,7 @@ int _tmain(int argc, _TCHAR* argv[])
 		case MMC_OPT_ENUM_ENCODER: EnumEncoders(); break;
 		case MMC_OPT_ENUM_FILTERS: EnumFilters(); break;
 		case MMC_OPT_GET_ENCODER: GetEncForFile(actions->m_pTarget);
+		case MMC_OPT_ENCODE:	Encode(actions->m_pTarget);
 		default: break;
 		}
 		RemoveHeadAction();
