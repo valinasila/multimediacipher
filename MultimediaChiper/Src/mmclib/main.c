@@ -357,7 +357,7 @@ int EncodeFile(LPCWSTR sourceFile, LPCWSTR* mediaFiles, int nMediaFiles, LPCWSTR
 	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	//	implemented just for nDestFiles = 1
 	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	int i = 0;
+	int i = 0;	
 	Filter filter = NULL;
 	FilterStructPtr filterStruct = NULL;
 	FiltersNodePtr	filterNode = NULL;
@@ -365,11 +365,16 @@ int EncodeFile(LPCWSTR sourceFile, LPCWSTR* mediaFiles, int nMediaFiles, LPCWSTR
 	Encoder	encoder = NULL;
 	int ret = MMC_OK;
 	unsigned char* buffer;
+	unsigned char* header = NULL;
 	unsigned int rb;
 	HANDLE hFile;
 	HANDLE hTemp;
 	WCHAR path[MAX_PATH] = {0};
-	
+	WCHAR path2[MAX_PATH] = {0};
+	int size = 0;
+	int offset = 0;
+	int j = 0;
+
 	ret = GetEncoderForFile(sourceFile,&encoder);
 	if(MMC_OK != ret)
 		return ret;
@@ -431,22 +436,53 @@ int EncodeFile(LPCWSTR sourceFile, LPCWSTR* mediaFiles, int nMediaFiles, LPCWSTR
 		
 	}
 
-	CreateDirectory(L"temp",NULL);
-	_snwprintf_s(path,MAX_PATH,MAX_PATH - 1,L"temp\\temp.tmp");	
+	size = GetModuleFileName(NULL, path2, _countof(path2) );
+	if(0 == size || _countof(path2) <= size)
+		return MMC_MEMORY_ERROR;	
+
+	PathRemoveFileSpec(path2);
+		
+	wcscat_s(path2,_countof(path2),L"\\temp");
+
+	CreateDirectory(path,NULL);
+	wcscat_s(path2,_countof(path2),L"\\temp.tmp");
+	_snwprintf_s(path,MAX_PATH,MAX_PATH - 1,path2);	
 	hTemp = CreateFile(path,GENERIC_READ | GENERIC_WRITE,0,NULL,CREATE_ALWAYS,FILE_ATTRIBUTE_TEMPORARY|FILE_FLAG_DELETE_ON_CLOSE,NULL);	
+	if(INVALID_HANDLE_VALUE == hTemp)
+		return MMC_MEMORY_ERROR;
+
+	header = (unsigned char*) malloc( /*MMC*/ (sizeof(char) * 3) + /*src path*/( sizeof(WCHAR) * ( wcslen(sourceFile)) + 1) + /*filters*/( sizeof(long long) * ( nFilters + 1) + 1 ) );
+	memcpy(header,"MMC",3);
+	offset = 3;
+	memcpy(header+offset,sourceFile,2 * ( wcslen(sourceFile) + 1) );
+	offset += 2 * ( wcslen(sourceFile) + 1);
+	*(header + offset) = (unsigned char) (nFilters & 0xff);	
+	offset +=1;
+	for(i = (int) (nFilters  - 1) ; i >=0; i--)
+	{
+		size = 0xff;
+		for(j = 0; j < sizeof(long long); j++)
+		{
+			*(header + offset) = (unsigned char) ( ((FilterStructPtr)*(useFilters + i))->m_ulUid & size);
+			size = size >> 8;
+			offset++;
+		}
+			
+		
+	}
+	*((long long*)(header + offset)) = 0;
+	offset += sizeof(long long);
+	encoder
 	if(NULL == filterNode)
 	{
 		// read buffer from file		
 		hFile = CreateFile(sourceFile,GENERIC_READ,FILE_SHARE_READ,NULL,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,NULL);
 		if( INVALID_HANDLE_VALUE == hFile)
-			return MMC_READ_FILE_ERROR;
-		CloseHandle(hFile);
+			return MMC_READ_FILE_ERROR;				
 	}
-	else
-	{
-		// read buffer from prev filter
-	}
+
 	free(buffer);
+	CloseHandle(hFile);
 	return MMC_OK;
 }
 int DecodeFiles(LPCWSTR* sourceFiles, int nSourceFiles)

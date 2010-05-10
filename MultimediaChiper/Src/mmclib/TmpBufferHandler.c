@@ -9,12 +9,23 @@ ID:            $Id$
 =================================================================================================
 */
 #include "TmpBufferHandler.h"
-
+#include <Shlwapi.h>
 int maxId = 0;
 TmpFileStructPtr fileList = NULL;
+WCHAR path[MAX_PATH] = {0};
+
 
 int InitTempBufferHandler()
 {
+	int size = 0;
+	size = GetModuleFileName(NULL, path, _countof(path) );
+	if(0 == size || _countof(path) <= size)
+		return MMC_MEMORY_ERROR;	
+
+	PathRemoveFileSpec(path);
+		
+	wcscat_s(path,_countof(path),L"\\temp");
+
 	fileList = NULL;
 	return 0;
 }
@@ -45,16 +56,17 @@ int SaveTempBuffer(TempHandle hndl,const unsigned char* buffer, unsigned int buf
 	}
 	if(NULL == node) // create file
 	{
-		WCHAR path[MAX_PATH] = {0};
+		WCHAR path2[MAX_PATH] = {0};
 		HANDLE* hFile = (HANDLE*) malloc(sizeof(HANDLE));
 		node = (TmpFileStructPtr) malloc(sizeof(TmpFileStruct));
 		node->hndl = hndl;
 		node->bFirstRead = TRUE;
-		fileList = node;
-		CreateDirectory(L"temp",NULL);
-		_snwprintf_s(path,MAX_PATH,MAX_PATH - 1,L"temp\\tmp_%d.tmp",((TmpHandleStructPtr) hndl)->id);		
 
-		*hFile = CreateFile(path,GENERIC_READ | GENERIC_WRITE,0,NULL,CREATE_ALWAYS,FILE_ATTRIBUTE_TEMPORARY|FILE_FLAG_DELETE_ON_CLOSE,NULL);
+		CreateDirectory(path,NULL);
+		wcscpy_s(path2,_countof(path2),path);
+		_snwprintf_s(path2,MAX_PATH,MAX_PATH - 1,L"\\tmp_%d.tmp",((TmpHandleStructPtr) hndl)->id);		
+
+		*hFile = CreateFile(path2,GENERIC_READ | GENERIC_WRITE,0,NULL,CREATE_ALWAYS,FILE_ATTRIBUTE_TEMPORARY|FILE_FLAG_DELETE_ON_CLOSE,NULL);
 
 		if(INVALID_HANDLE_VALUE == *hFile)
 		{
@@ -65,6 +77,7 @@ int SaveTempBuffer(TempHandle hndl,const unsigned char* buffer, unsigned int buf
 		node->m_pHFile = hFile;
 
 		node->m_pNext = fileList;
+		fileList = node;
 	}
 	bw = 0;
 	WriteFile(*node->m_pHFile,buffer, bufferSize,&bw,NULL);
