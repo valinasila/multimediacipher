@@ -14,8 +14,8 @@ ID:            $Id$
 
 #include "mmclib.h"
 #include "TmpBufferhandler.h"
-#define DEFAULT_ENCODERS_DIR L"encoders"
-#define DEFAULT_FILTERS_DIR	 L"filters"
+#define DEFAULT_ENCODERS_DIR L"\\encoders"
+#define DEFAULT_FILTERS_DIR	 L"\\filters"
 
 typedef struct _encodersNode EncodersNode, *EncodersNodePtr;
 struct _encodersNode{

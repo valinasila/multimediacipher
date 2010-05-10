@@ -9,12 +9,16 @@ ID:						$Id$
 =================================================================================================
 */
 #include "mmc.h"
+#include <Shlwapi.h>
 TempHandlerAPI tmpBufHandler;
 
 int Init()
 {
 	int ret;
-	
+	WCHAR path[MAX_PATH] = {0};
+	WCHAR path2[MAX_PATH] = {0};
+	int size = 0;
+
 	tmpBufHandler.m_lpfnCloseTempHandle = &CloseTempBuffer;
 	tmpBufHandler.m_lpfnDropTempHandle =  &DropTempHandle;
 	tmpBufHandler.m_lpfnGetTempBuffer =  &GetTempBuffer;
@@ -22,11 +26,22 @@ int Init()
 	tmpBufHandler.m_lpfnSaveTempBuffer = &SaveTempBuffer;
 	InitTempBufferHandler();
 
-	ret = ChangeEncodersFolder(DEFAULT_ENCODERS_DIR);
+	size = GetModuleFileName(NULL, path, _countof(path) );
+	if(0 == size || _countof(path) <= size)
+		return MMC_MEMORY_ERROR;	
+
+	PathRemoveFileSpec(path);
+		
+	wcscpy_s(path2,_countof(path2),path);
+	wcscat_s(path2,_countof(path),DEFAULT_ENCODERS_DIR);
+
+	ret = ChangeEncodersFolder(path2);
 	if(ret != MMC_OK)
 		return ret;
 
-	ret = ChangeFiltersFolder(DEFAULT_FILTERS_DIR);
+	wcscpy_s(path2,_countof(path2),path);
+	wcscat_s(path2,_countof(path),DEFAULT_FILTERS_DIR);
+	ret = ChangeFiltersFolder(path2);
 	if(ret != MMC_OK)
 		return ret;
 
@@ -101,7 +116,8 @@ int ChangeFiltersFolder(LPCWSTR path)
 }
 int ScanEncoders()
 {
-	int bRunning = 1;	
+	int bRunning = 1;
+	int dwret = 0;
 	HANDLE hFile = NULL;	
 	WIN32_FIND_DATA wfd;
 	HMODULE* tmpDll;	
@@ -121,6 +137,7 @@ int ScanEncoders()
 			hFile = FindFirstFile(dllDir,&wfd);
 			if(INVALID_HANDLE_VALUE == hFile)
 			{
+				dwret = GetLastError();
 				free(dllPath);	
 				free(dllDir);
 				return MMC_WRONG_ENCODERS_FOLDER;
