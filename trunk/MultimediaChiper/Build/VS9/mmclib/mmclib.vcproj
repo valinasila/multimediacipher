@@ -61,6 +61,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="Shlwapi.lib"
 				OutputFile="..\..\..\Bin\VS9\$(ConfigurationName)\PlayGround\$(ProjectName).dll"
 				LinkIncremental="2"
 				ModuleDefinitionFile="..\..\..\Export\mmclib.def"
@@ -137,6 +138,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="Shlwapi.lib"
 				OutputFile="..\..\..\Bin\VS9\$(ConfigurationName)\PlayGround\$(ProjectName).dll"
 				LinkIncremental="1"
 				ModuleDefinitionFile="..\..\..\Export\mmclib.def"

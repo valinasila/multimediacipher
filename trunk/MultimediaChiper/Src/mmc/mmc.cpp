@@ -196,7 +196,7 @@ int Init()
 void Encode(encodeStructPtr p)
 {
 	wprintf(L"----------------------------------------------------------------------------\n");
-
+	api_mmc.m_lpfnEncodeFile(p->srcPath,p->mediaFiles,(int) p->nMediaFiles,p->outFiles,(int)p->nOutFiles, p->filterList,(int) p->nFilterList);
 	wprintf(L"----------------------------------------------------------------------------\n\n");
 }
 
@@ -291,7 +291,7 @@ int _tmain(int argc, _TCHAR* argv[])
 							i++;
 						}
 						if( i >= argc)
-						{
+						{							
 							for(j = 0; j < tmpEncode->nMediaFiles; j++)
 								free( *(tmpEncode->mediaFiles + j ) );
 
@@ -302,6 +302,7 @@ int _tmain(int argc, _TCHAR* argv[])
 						}
 						else
 						{
+							i++;
 							while( ( i < argc) && ( wcscmp(argv[i],L"/flt") != 0 ) )
 							{
 								tmp = (LPWSTR) malloc(sizeof(WCHAR) * MAX_PATH);
@@ -327,7 +328,7 @@ int _tmain(int argc, _TCHAR* argv[])
 								if( (i + 1) < argc)
 								{
 									i++;
-									while( ( i < argc) && ( argv[i][0] != L'-' ) )
+									while( ( i < argc) && ( argv[i+1][0] != L'-' ) )
 									{								
 										tmpEncode->nFilterList++;				
 										for(j = 0; j <filterListSize; j++)
