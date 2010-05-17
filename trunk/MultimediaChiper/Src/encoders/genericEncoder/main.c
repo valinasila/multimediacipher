@@ -34,22 +34,25 @@ EncoderRet Init()
 	m_pSignature->m_Signature = NULL;
 	m_pSignature->m_ulSignatureSize = 0;
 	m_pSignature->m_ulSignatureStartPos = 0;
+	
+	internalBuffer = (unsigned char*) malloc(sizeof(unsigned char) * 2048);
+	if(NULL == internalBuffer)
+		return ENC_RET_Insuficient_Size;
 
-	tempBuffer = (unsigned char*) malloc(sizeof(unsigned char) * 1024);
-	if(NULL == tempBuffer)
-		return ENC_RET_UnknownError;
-
-	tempBufferSize = 1024;
-	tempBufferUsedBytes = 0;
 	m_bEncode = TRUE;
 	m_bFirstBuffer = TRUE;
+
+	sourceHandle = NULL;
+	envelopeHandle = NULL;
 	return ENC_RET_OK;
 }
 EncoderRet ReloadEncoder()
 {
+	pTmpApi->m_lpfnCloseTempHandle( sourceHandle);
+	pTmpApi->m_lpfnCloseTempHandle( envelopeHandle);
 	m_bEncode = TRUE;
 	m_bFirstBuffer = TRUE;
-	tempBufferUsedBytes = 0;
+	
 	return ENC_RET_OK;
 }
 Encoder GetEncoder()
@@ -62,6 +65,15 @@ EncoderSignaturePtr GetEncoderSignature()
 }
 EncoderRet	UnInit()
 {
+	if(NULL != pTmpApi->m_lpfnDropTempHandle)
+	{
+		pTmpApi->m_lpfnDropTempHandle(sourceHandle);
+		pTmpApi->m_lpfnDropTempHandle(envelopeHandle);
+
+	}
+	if(NULL != internalBuffer)
+		free(internalBuffer);
+
 	if(m_pInternalStruct)
 	{
 		free(m_pInternalStruct->m_szName);
@@ -75,9 +87,7 @@ EncoderRet	UnInit()
 			free(m_pSignature->m_Signature);
 		free(m_pSignature);
 	}
-	if(tempBuffer)
-		free(tempBuffer);
-	return ENC_RET_OK;
+		return ENC_RET_OK;
 }
 EncoderRet SetAction(int bEncode)
 {
@@ -86,34 +96,44 @@ EncoderRet SetAction(int bEncode)
 }
 EncoderRet SetSourceBuffer(const unsigned char* buffer, unsigned int bufferSize)
 {
+	if(NULL == sourceHandle)
+		return ENC_RET_WrongArgument;
+
+	pTmpApi->m_lpfnSaveTempBuffer(sourceHandle,buffer,bufferSize);
+
 	return ENC_RET_OK;
 }
 EncoderRet SetBuffer(const unsigned char* buffer, unsigned int bufferSize)
 {	
-	if(bufferSize > tempBufferSize)
-	{
-		if(tempBuffer)
-			free(tempBuffer);
-		tempBuffer = (unsigned char*) malloc( sizeof(unsigned char) * bufferSize);
-		tempBufferSize = bufferSize;
-	}
-	memcpy(tempBuffer,buffer,bufferSize);
-	tempBufferUsedBytes = bufferSize;
+	if(NULL == envelopeHandle)
+		return ENC_RET_WrongArgument;
 	
+	pTmpApi->m_lpfnSaveTempBuffer(envelopeHandle,buffer,bufferSize);
+
 	return ENC_RET_OK;
 }
 EncoderRet GetBuffer(unsigned char* buffer, unsigned int bufferSize,unsigned int* bytesWrote)
-{
-	if(bufferSize > tempBufferSize)
+{	
+	if(NULL == envelopeHandle)
+		return ENC_RET_WrongArgument;
+	if(NULL == sourceHandle)
+		return ENC_RET_WrongArgument;
+
+	pTmpApi->m_lpfnGetTempBuffer(sourceHandle,internalBuffer,bufferSize,bytesWrote);
+	if(0 == bytesWrote)
 	{
-		*bytesWrote = tempBufferSize;
+		pTmpApi->m_lpfnGetTempBuffer(envelopeHandle,internalBuffer,bufferSize,bytesWrote);
 	}
-	else
-		*bytesWrote = bufferSize;
-	memcpy(buffer,tempBuffer,*bytesWrote);
 	return ENC_RET_OK;
 }
 EncoderRet SetTempFn(TempHandlerAPIPtr api)
 {
+	pTmpApi = api; 
+
+	if(NULL == pTmpApi->m_lpfnGetTempHandle)
+		return ENC_RET_WrongArgument;
+
+	pTmpApi->m_lpfnGetTempHandle(&sourceHandle);
+	pTmpApi->m_lpfnGetTempHandle(&envelopeHandle);
 	return ENC_RET_OK;
 }

@@ -379,8 +379,9 @@ int EncodeFile(LPCWSTR sourceFile, LPCWSTR* mediaFiles, int nMediaFiles, LPCWSTR
 	unsigned char* buffer;
 	unsigned char* header = NULL;
 	unsigned int rb;
+	unsigned int wb;
 	HANDLE hFile;
-	HANDLE hTemp;
+	HANDLE hWrite;
 	WCHAR path[MAX_PATH] = {0};
 	WCHAR path2[MAX_PATH] = {0};
 	int size = 0;
@@ -451,14 +452,13 @@ int EncodeFile(LPCWSTR sourceFile, LPCWSTR* mediaFiles, int nMediaFiles, LPCWSTR
 		
 	}
 
-	header = (unsigned char*) malloc( /*MMC*/ (sizeof(char) * 3) + /*src path*/( sizeof(WCHAR) * ( wcslen(sourceFile)) + 1) + /*filters*/( sizeof(long long) * ( nFilters + 1) + 1 ) );
+	header = (unsigned char*) malloc( /*MMC*/ (sizeof(char) * 3) + /*filters*/( sizeof(long long) * ( nFilters + 1) + 1 ) );
 	memcpy(header,"MMC",3);
-	offset = 3;
-	memcpy(header+offset,sourceFile,2 * ( wcslen(sourceFile) + 1) );
-	offset += 2 * ( wcslen(sourceFile) + 1);
+	offset = 3;	
 	*(header + offset) = (unsigned char) (nFilters & 0xff);	
 	offset +=1;
-	for(i = (int) (nFilters  - 1) ; i >=0; i--)
+	for(i = (int) (nFilters  - 1) ; i >=0; i--) // TODO: optimize this so it can save only the maximum number of bytes modified by the id.
+												// If the max Id is on 2 bytes, then the header should contain only 2 bytes for each filterId
 	{
 		*((long long*)(header + offset)) = ((FilterStructPtr)*(useFilters + i) )->m_ulUid;
 		offset += sizeof(long long);		
@@ -494,8 +494,36 @@ int EncodeFile(LPCWSTR sourceFile, LPCWSTR* mediaFiles, int nMediaFiles, LPCWSTR
 		CloseHandle(hFile);
 
 	//TODO : read envelope file and write output
-	free(buffer);
+	
+	hFile = CreateFile(*mediaFiles,GENERIC_READ,FILE_SHARE_READ,NULL,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,NULL);
+	if(INVALID_HANDLE_VALUE == hFile)
+		return MMC_READ_FILE_ERROR;
+	
+	hWrite = CreateFile(*destFiles,GENERIC_WRITE,FILE_SHARE_READ,NULL,OPEN_ALWAYS,FILE_ATTRIBUTE_NORMAL,NULL);
+	if(INVALID_HANDLE_VALUE == hWrite)
+	{
+		CloseHandle(hFile);
+		return MMC_READ_FILE_ERROR;
+	}
+
+	rb = 0;
+	do{
+		ReadFile(hFile,buffer,1024,&rb,NULL);
+		encoderNode->m_API.m_lpfnSetBuffer(buffer,rb); // This code should check for errors
+		encoderNode->m_API.m_lpfnGetBuffer(buffer,1024,&wb);
+		WriteFile(hWrite,buffer,wb,&wb,NULL);
+	} while(rb > 0);
+	
+	do{
+		encoderNode->m_API.m_lpfnGetBuffer(buffer,1024,&wb);
+		WriteFile(hWrite,buffer,wb,&wb,NULL);
+	} while(wb > 0);
+
 	CloseHandle(hFile);
+	CloseHandle(hWrite);
+
+
+	free(buffer);	
 	return MMC_OK;
 }
 int DecodeFiles(LPCWSTR* sourceFiles, int nSourceFiles)
