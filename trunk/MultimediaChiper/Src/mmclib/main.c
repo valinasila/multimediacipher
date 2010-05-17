@@ -510,8 +510,8 @@ int EncodeFile(LPCWSTR sourceFile, LPCWSTR* mediaFiles, int nMediaFiles, LPCWSTR
 	do{
 		ReadFile(hFile,buffer,1024,&rb,NULL);
 		encoderNode->m_API.m_lpfnSetBuffer(buffer,rb); // This code should check for errors
-		encoderNode->m_API.m_lpfnGetBuffer(buffer,1024,&wb);
-		WriteFile(hWrite,buffer,wb,&wb,NULL);
+	//	encoderNode->m_API.m_lpfnGetBuffer(buffer,1024,&wb);
+	//	WriteFile(hWrite,buffer,wb,&wb,NULL);
 	} while(rb > 0);
 	
 	do{

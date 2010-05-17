@@ -35,10 +35,7 @@ EncoderRet Init()
 	m_pSignature->m_ulSignatureSize = 0;
 	m_pSignature->m_ulSignatureStartPos = 0;
 	
-	internalBuffer = (unsigned char*) malloc(sizeof(unsigned char) * 2048);
-	if(NULL == internalBuffer)
-		return ENC_RET_Insuficient_Size;
-
+	
 	m_bEncode = TRUE;
 	m_bFirstBuffer = TRUE;
 
@@ -71,8 +68,7 @@ EncoderRet	UnInit()
 		pTmpApi->m_lpfnDropTempHandle(envelopeHandle);
 
 	}
-	if(NULL != internalBuffer)
-		free(internalBuffer);
+	
 
 	if(m_pInternalStruct)
 	{
@@ -119,10 +115,10 @@ EncoderRet GetBuffer(unsigned char* buffer, unsigned int bufferSize,unsigned int
 	if(NULL == sourceHandle)
 		return ENC_RET_WrongArgument;
 
-	pTmpApi->m_lpfnGetTempBuffer(sourceHandle,internalBuffer,bufferSize,bytesWrote);
-	if(0 == bytesWrote)
+	pTmpApi->m_lpfnGetTempBuffer(sourceHandle,buffer,bufferSize,bytesWrote);
+	if(0 == *bytesWrote)
 	{
-		pTmpApi->m_lpfnGetTempBuffer(envelopeHandle,internalBuffer,bufferSize,bytesWrote);
+		pTmpApi->m_lpfnGetTempBuffer(envelopeHandle,buffer,bufferSize,bytesWrote);
 	}
 	return ENC_RET_OK;
 }
