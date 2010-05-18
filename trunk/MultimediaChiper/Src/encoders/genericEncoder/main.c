@@ -105,13 +105,15 @@ EncoderRet SetSourceBuffer(const unsigned char* buffer, unsigned int bufferSize)
 	return ENC_RET_OK;
 }
 EncoderRet SetBuffer(const unsigned char* buffer, unsigned int bufferSize)
-{	
-	if(NULL == envelopeHandle)
+{
+	if(NULL == sourceHandle)
 			return ENC_RET_WrongArgument;
 
 	if(m_bEncode)
 	{
-		// encode		
+		// encode	
+		if(NULL == envelopeHandle)
+			return ENC_RET_WrongArgument;
 		pTmpApi->m_lpfnSaveTempBuffer(envelopeHandle,buffer,bufferSize);
 
 	}
@@ -125,17 +127,19 @@ EncoderRet SetBuffer(const unsigned char* buffer, unsigned int bufferSize)
 			tmp = strstr(buffer,"MMC");
 			if(NULL == tmp);
 				return ENC_RET_UnknownError;
+
+			pTmpApi->m_lpfnSaveTempBuffer(sourceHandle,"MMC",3);
 			tmp += 3;
 			m_sourceBufferSize = *((unsigned long long*) tmp);
 			tmp += sizeof(unsigned long long);
 			if(m_sourceBufferSize > (unsigned long long)(bufferSize - 3 - sizeof(unsigned long long) ) )
 			{
-				pTmpApi->m_lpfnSaveTempBuffer(envelopeHandle,tmp,(unsigned int) m_sourceBufferSize );
+				pTmpApi->m_lpfnSaveTempBuffer(sourceHandle,tmp,(unsigned int) m_sourceBufferSize );
 				m_sourceBufferSize = 0;
 			}
 			else
 			{
-				pTmpApi->m_lpfnSaveTempBuffer(envelopeHandle,tmp,bufferSize - 3 - sizeof(unsigned long long) );
+				pTmpApi->m_lpfnSaveTempBuffer(sourceHandle,tmp,bufferSize - 3 - sizeof(unsigned long long) );
 				m_sourceBufferSize -= (3 + sizeof(unsigned long long) );
 			}
 		}
@@ -145,12 +149,12 @@ EncoderRet SetBuffer(const unsigned char* buffer, unsigned int bufferSize)
 			{
 				if(m_sourceBufferSize > (unsigned long long)bufferSize  )
 				{
-					pTmpApi->m_lpfnSaveTempBuffer(envelopeHandle,buffer,(unsigned int) m_sourceBufferSize );
+					pTmpApi->m_lpfnSaveTempBuffer(sourceHandle,buffer,(unsigned int) m_sourceBufferSize );
 					m_sourceBufferSize = 0;
 				}
 				else
 				{
-					pTmpApi->m_lpfnSaveTempBuffer(envelopeHandle,buffer,bufferSize );
+					pTmpApi->m_lpfnSaveTempBuffer(sourceHandle,buffer,bufferSize );
 					m_sourceBufferSize -= bufferSize;
 				}
 			}
@@ -160,12 +164,13 @@ EncoderRet SetBuffer(const unsigned char* buffer, unsigned int bufferSize)
 }
 EncoderRet GetBuffer(unsigned char* buffer, unsigned int bufferSize,unsigned int* bytesWrote)
 {	
-	if(NULL == envelopeHandle)
+	
+	if(NULL == sourceHandle)
 			return ENC_RET_WrongArgument;
-
+	
 	if(m_bEncode)
 	{
-		if(NULL == sourceHandle)
+		if(NULL == envelopeHandle)
 			return ENC_RET_WrongArgument;
 
 		if(m_bIsFirstSourceBuffer)
@@ -190,7 +195,7 @@ EncoderRet GetBuffer(unsigned char* buffer, unsigned int bufferSize,unsigned int
 	}
 	else
 	{
-		pTmpApi->m_lpfnGetTempBuffer(envelopeHandle,buffer,bufferSize,bytesWrote);
+		pTmpApi->m_lpfnGetTempBuffer(sourceHandle,buffer,bufferSize,bytesWrote);
 	}
 	return ENC_RET_OK;
 }
