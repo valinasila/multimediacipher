@@ -102,7 +102,7 @@ int RemoveHeadAction()
 
 				if(NULL != tmpDecodeStruct->mediaFiles)
 					free(tmpDecodeStruct->mediaFiles);
-
+				free(tmpDecodeStruct);
 			}
 			else
 			{
@@ -117,7 +117,8 @@ int RemoveHeadAction()
 	return 0;
 }
 
-
+//-dec d:\cod\mmc\Bin\VS9\Debug\PlayGround\output.bmp /dst d:\cod\mmc\Bin\VS9\Debug\PlayGround\output.txt -kb
+//-kb -enc d:\cod\mmc\Bin\VS9\Debug\PlayGround\text.txt /src d:\cod\mmc\Bin\VS9\Debug\PlayGround\test.bmp /dst d:\cod\mmc\Bin\VS9\Debug\PlayGround\output.bmp /flt 1
 
 void ShowHelp()
 {
@@ -398,6 +399,10 @@ int _tmain(int argc, _TCHAR* argv[])
 			if( (i + i) <argc )
 			{
 				i++;
+				tmpDecode = (decodeStructPtr) malloc(sizeof(decodeStruct));
+				tmpDecode->nMediaFiles = 0;
+				tmpDecode->dstPath = NULL;
+				tmpDecode->mediaFiles = NULL;
 				while( ( i < argc) && ( wcscmp(argv[i],L"/dst") != 0 ) )
 				{
 					tmp = (LPWSTR) malloc(sizeof(WCHAR) * MAX_PATH);
@@ -408,7 +413,7 @@ int _tmain(int argc, _TCHAR* argv[])
 					*(tmpDecode->mediaFiles + (tmpDecode->nMediaFiles - 1) ) = tmp;  
 					i++;
 				}
-				if( (i + i) <argc )
+				if( (i + 1) <argc )
 				{
 					i++;
 					tmp = (LPWSTR) malloc(sizeof(WCHAR) * MAX_PATH);

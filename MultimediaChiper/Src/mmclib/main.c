@@ -452,7 +452,7 @@ int EncodeFile(LPCWSTR sourceFile, LPCWSTR* mediaFiles, int nMediaFiles, LPCWSTR
 		
 	}
 
-	header = (unsigned char*) malloc( /*MMC*/ (sizeof(char) * 3) + /*filters*/( sizeof(long long) * ( nFilters + 1) + 1 ) );
+	header = (unsigned char*) malloc( /*MMC*/ (sizeof(char) * 3) + /*filters*/ sizeof(long long) * ( nFilters + 1) );
 	memcpy(header,"MMC",3);
 	offset = 3;	
 	*(header + offset) = (unsigned char) (nFilters & 0xff);	
@@ -463,9 +463,7 @@ int EncodeFile(LPCWSTR sourceFile, LPCWSTR* mediaFiles, int nMediaFiles, LPCWSTR
 		*((long long*)(header + offset)) = ((FilterStructPtr)*(useFilters + i) )->m_ulUid;
 		offset += sizeof(long long);		
 	}
-
-	*((long long*)(header + offset)) = 0;
-	offset += sizeof(long long);	
+	
 	encoderNode->m_API.m_lpfnSetSourceBuffer(header,offset);
 	free(header);
 
@@ -533,7 +531,7 @@ int GetFilterByUid(unsigned long long uid, Filter* filter)
 	*filter = NULL;
 	while(node != NULL)
 	{
-		if(node->m_pFilter->m_ulUid == uid)
+		if( ((FilterStructPtr)node->m_pFilter)->m_ulUid == uid)
 		{
 			*filter = node->m_pFilter;
 			break;
@@ -546,18 +544,22 @@ int GetFilterByUid(unsigned long long uid, Filter* filter)
 int DecodeFiles(LPCWSTR* sourceFiles, int nSourceFiles,LPCWSTR destFile)
 {
 	HANDLE hFile = NULL;
+	HANDLE hWriteFile = NULL;
 	Encoder	encoder = NULL;
 	EncodersNodePtr encoderNode = NULL;
+	FiltersNodePtr filterNode = NULL;
+	FiltersNodePtr  prevFilter = NULL;
 	unsigned char* buffer = NULL;
 	int ret = MMC_OK;
 	int rb = 0;
+	int wb = 0;
 	int bFirstTime = TRUE;
 	Filter* filters = NULL;
 	unsigned long long uid = 0;
 	int nFilters = 0;
 	int i = 0;
 
-	ret = GetEncoderForFile(sourceFile,&encoder);
+	ret = GetEncoderForFile(*sourceFiles,&encoder);
 	if(MMC_OK != ret)
 		return ret;
 
@@ -569,71 +571,122 @@ int DecodeFiles(LPCWSTR* sourceFiles, int nSourceFiles,LPCWSTR destFile)
 	if(NULL == buffer)
 		return MMC_MEMORY_ERROR;
 
-	hFile = CreateFile(*mediaFiles,GENERIC_READ,FILE_SHARE_READ,NULL,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,NULL);
+	hFile = CreateFile(*sourceFiles,GENERIC_READ,FILE_SHARE_READ,NULL,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,NULL);
 	if(INVALID_HANDLE_VALUE == hFile)
 	{
 		free(buffer);
 		return MMC_READ_FILE_ERROR;
 	}
+	
+	hWriteFile = CreateFile(destFile,GENERIC_WRITE,FILE_SHARE_READ,NULL,CREATE_ALWAYS,FILE_ATTRIBUTE_NORMAL,NULL);
+	if(INVALID_HANDLE_VALUE == hWriteFile)
+	{
+		free(buffer);
+		CloseHandle(hFile);
+		return MMC_READ_FILE_ERROR;
+	}
+
+	do{
+		ReadFile(hFile,buffer,1024,&rb,NULL);
+		if(rb > 0)
+			encoderNode->m_API.m_lpfnSetBuffer(buffer,rb);			
+		
+	} while(rb>0);
+
+	CloseHandle(hFile);
 
 	do{
 		if(bFirstTime)
 		{
 			bFirstTime = FALSE;
-			ReadFile(hFile,buffer,3,&rb,NULL); //MMC
-			buffer[3] = NULL;
+			encoderNode->m_API.m_lpfnGetBuffer(buffer,3,&rb); //MMC
+			buffer[3] = '\0';
 			if( (rb != 3) || (strcmp(buffer,"MMC") != 0) )
 			{
-				free(buffer);
-				CloseHandle(hFile);
+				free(buffer);	
+				CloseHandle(hWriteFile);
 				return MMC_READ_FILE_ERROR;
 			}
-			ReadFile(hFile,buffer,sizeof(int),&rb,NULL);
-			if(rb != sizeof(int))
+			encoderNode->m_API.m_lpfnGetBuffer(buffer,sizeof(char),&rb);		
+			if(rb != sizeof(char))
 			{
 				free(buffer);
-				CloseHandle(hFile);
+				CloseHandle(hWriteFile);
 				return MMC_READ_FILE_ERROR;
 			}
-			nFilters = *((int*)buffer);
+			nFilters = (int)(*((unsigned char*)buffer));
 			filters = (Filter*) malloc(sizeof(Filter) * nFilters);
 			for(i = 0; i < nFilters; i++)
 			{
-				ReadFile(hFile,buffer,sizeof(long long),&rb,NULL);
+				encoderNode->m_API.m_lpfnGetBuffer(buffer,sizeof(long long),&rb);
 				if(rb != sizeof(long long))
 				{
-					free(buffer);
-					CloseHandle(hFile);
+					free(buffer);					
 					free(filters);
+					CloseHandle(hWriteFile);
 					return MMC_READ_FILE_ERROR;
 				}
 				uid = *((unsigned long long*)buffer);
 				GetFilterByUid(uid,filters + i);
 				if(NULL == *(filters + i) )
 				{
-					free(buffer);
-					CloseHandle(hFile);
+					free(buffer);					
 					free(filters);
+					CloseHandle(hWriteFile);
 					return MMC_READ_FILE_ERROR;
 				}
+			}
+			if(nFilters > 0)
+			{
+				filterNode = GetFilterNode(*filters);
+				filterNode->m_API.m_lpfnReloadFilter();
+				filterNode->m_API.m_lpfnSetAction(FALSE);
 			}
 
 		}
 		else
 		{
-			ReadFile(hFile,buffer,1024,&rb,NULL);
-			if(rb > 0)
+			encoderNode->m_API.m_lpfnGetBuffer(buffer,1024,&rb);
+			if(0 <= nFilters)
 			{
-				encoderNode->m_API.m_lpfnSetBuffer(buffer,rb);
+				WriteFile(hWriteFile,buffer,rb,&wb,NULL);
 			}
-		}
-	} while(rb>0)
+			else
+			{
+				filterNode->m_API.m_lpfnSetBuffer(buffer,rb,FALSE);
+			}
+		}	
+	} while(rb>0);
 
-	free(buffer);
-	CloseHandle(hFile);
+	if(filterNode != NULL)
+		filterNode->m_API.m_lpfnSetBuffer(NULL,0,TRUE);
+
+	prevFilter = filterNode;
+	for(i = 1; i<nFilters; i++)
+	{
+		filterNode = GetFilterNode(*(filters + i));
+		filterNode->m_API.m_lpfnReloadFilter();
+		filterNode->m_API.m_lpfnSetAction(FALSE);
+
+		do{
+			prevFilter->m_API.m_lpfnGetBuffer(buffer,1024,&rb);
+			filterNode->m_API.m_lpfnSetBuffer(buffer,rb,FALSE);
+		} while(rb>0);
+		
+		filterNode->m_API.m_lpfnSetBuffer(NULL,0,TRUE);
+
+		prevFilter = filterNode;
+	}
+
+	do{
+		filterNode->m_API.m_lpfnGetBuffer(buffer,1024,&rb);
+		WriteFile(hWriteFile,buffer,rb,&wb,NULL);
+	} while(rb>0);
+
+	free(buffer);	
 	if(NULL !=filters)
 		free(filters);
-
+	CloseHandle(hWriteFile);
 
 	return MMC_OK;
 }

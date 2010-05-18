@@ -125,22 +125,22 @@ EncoderRet SetBuffer(const unsigned char* buffer, unsigned int bufferSize)
 			unsigned char* tmp = NULL;
 			m_bIsFirstDecodeBuffer = FALSE;
 			tmp = strstr(buffer,"MMC");
-			if(NULL == tmp);
-				return ENC_RET_UnknownError;
+			/*if(NULL == tmp);
+				return ENC_RET_UnknownError;*/
 
 			pTmpApi->m_lpfnSaveTempBuffer(sourceHandle,"MMC",3);
 			tmp += 3;
-			m_sourceBufferSize = *((unsigned long long*) tmp);
+			m_sourceBufferSize = *((unsigned long long*) tmp) - 3;
 			tmp += sizeof(unsigned long long);
-			if(m_sourceBufferSize > (unsigned long long)(bufferSize - 3 - sizeof(unsigned long long) ) )
+			if(m_sourceBufferSize < (unsigned long long)(bufferSize - sizeof(unsigned long long) ) )
 			{
 				pTmpApi->m_lpfnSaveTempBuffer(sourceHandle,tmp,(unsigned int) m_sourceBufferSize );
 				m_sourceBufferSize = 0;
 			}
 			else
 			{
-				pTmpApi->m_lpfnSaveTempBuffer(sourceHandle,tmp,bufferSize - 3 - sizeof(unsigned long long) );
-				m_sourceBufferSize -= (3 + sizeof(unsigned long long) );
+				pTmpApi->m_lpfnSaveTempBuffer(sourceHandle,tmp,bufferSize  - sizeof(unsigned long long) );
+				m_sourceBufferSize -= sizeof(unsigned long long) ;
 			}
 		}
 		else
@@ -149,13 +149,13 @@ EncoderRet SetBuffer(const unsigned char* buffer, unsigned int bufferSize)
 			{
 				if(m_sourceBufferSize > (unsigned long long)bufferSize  )
 				{
-					pTmpApi->m_lpfnSaveTempBuffer(sourceHandle,buffer,(unsigned int) m_sourceBufferSize );
-					m_sourceBufferSize = 0;
+					pTmpApi->m_lpfnSaveTempBuffer(sourceHandle,buffer, bufferSize );
+					m_sourceBufferSize -= bufferSize;
 				}
 				else
 				{
-					pTmpApi->m_lpfnSaveTempBuffer(sourceHandle,buffer,bufferSize );
-					m_sourceBufferSize -= bufferSize;
+					pTmpApi->m_lpfnSaveTempBuffer(sourceHandle,buffer,(unsigned int)m_sourceBufferSize );					
+					m_sourceBufferSize = 0;
 				}
 			}
 		}
