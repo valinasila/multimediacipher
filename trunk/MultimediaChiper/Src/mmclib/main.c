@@ -526,7 +526,7 @@ int EncodeFile(LPCWSTR sourceFile, LPCWSTR* mediaFiles, int nMediaFiles, LPCWSTR
 	free(buffer);	
 	return MMC_OK;
 }
-int DecodeFiles(LPCWSTR* sourceFiles, int nSourceFiles)
+int DecodeFiles(LPCWSTR* sourceFiles, int nSourceFiles,LPCWSTR destFile)
 {
 	return MMC_OK;
 }
