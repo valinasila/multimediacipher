@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="windows-1250"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="mmclib"
 	ProjectGUID="{B64EDB63-E82C-42B4-993F-CDE61C397C49}"
 	RootNamespace="mmclib"

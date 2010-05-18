@@ -526,8 +526,115 @@ int EncodeFile(LPCWSTR sourceFile, LPCWSTR* mediaFiles, int nMediaFiles, LPCWSTR
 	free(buffer);	
 	return MMC_OK;
 }
+
+int GetFilterByUid(unsigned long long uid, Filter* filter)
+{
+	FiltersNodePtr node = filtersList;
+	*filter = NULL;
+	while(node != NULL)
+	{
+		if(node->m_pFilter->m_ulUid == uid)
+		{
+			*filter = node->m_pFilter;
+			break;
+		}
+		node = node->m_pNext;
+	}
+	return MMC_OK;
+}
+
 int DecodeFiles(LPCWSTR* sourceFiles, int nSourceFiles,LPCWSTR destFile)
 {
+	HANDLE hFile = NULL;
+	Encoder	encoder = NULL;
+	EncodersNodePtr encoderNode = NULL;
+	unsigned char* buffer = NULL;
+	int ret = MMC_OK;
+	int rb = 0;
+	int bFirstTime = TRUE;
+	Filter* filters = NULL;
+	unsigned long long uid = 0;
+	int nFilters = 0;
+	int i = 0;
+
+	ret = GetEncoderForFile(sourceFile,&encoder);
+	if(MMC_OK != ret)
+		return ret;
+
+	encoderNode = GetEncoderNode(encoder);
+	encoderNode->m_API.m_lpfnReloadEncoder();
+	encoderNode->m_API.m_lpfnSetAction(FALSE);
+
+	buffer = (unsigned char*) malloc(1024* sizeof(char));
+	if(NULL == buffer)
+		return MMC_MEMORY_ERROR;
+
+	hFile = CreateFile(*mediaFiles,GENERIC_READ,FILE_SHARE_READ,NULL,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,NULL);
+	if(INVALID_HANDLE_VALUE == hFile)
+	{
+		free(buffer);
+		return MMC_READ_FILE_ERROR;
+	}
+
+	do{
+		if(bFirstTime)
+		{
+			bFirstTime = FALSE;
+			ReadFile(hFile,buffer,3,&rb,NULL); //MMC
+			buffer[3] = NULL;
+			if( (rb != 3) || (strcmp(buffer,"MMC") != 0) )
+			{
+				free(buffer);
+				CloseHandle(hFile);
+				return MMC_READ_FILE_ERROR;
+			}
+			ReadFile(hFile,buffer,sizeof(int),&rb,NULL);
+			if(rb != sizeof(int))
+			{
+				free(buffer);
+				CloseHandle(hFile);
+				return MMC_READ_FILE_ERROR;
+			}
+			nFilters = *((int*)buffer);
+			filters = (Filter*) malloc(sizeof(Filter) * nFilters);
+			for(i = 0; i < nFilters; i++)
+			{
+				ReadFile(hFile,buffer,sizeof(long long),&rb,NULL);
+				if(rb != sizeof(long long))
+				{
+					free(buffer);
+					CloseHandle(hFile);
+					free(filters);
+					return MMC_READ_FILE_ERROR;
+				}
+				uid = *((unsigned long long*)buffer);
+				GetFilterByUid(uid,filters + i);
+				if(NULL == *(filters + i) )
+				{
+					free(buffer);
+					CloseHandle(hFile);
+					free(filters);
+					return MMC_READ_FILE_ERROR;
+				}
+			}
+
+		}
+		else
+		{
+			ReadFile(hFile,buffer,1024,&rb,NULL);
+			if(rb > 0)
+			{
+				encoderNode->m_API.m_lpfnSetBuffer(buffer,rb);
+			}
+		}
+	} while(rb>0)
+
+	free(buffer);
+	CloseHandle(hFile);
+	if(NULL !=filters)
+		free(filters);
+
+
 	return MMC_OK;
 }
 int GetEncoderForFile(LPCWSTR filePath, Encoder* encoder)

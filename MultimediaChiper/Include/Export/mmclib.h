@@ -104,6 +104,7 @@ typedef int (*encodeFileFn) (LPCWSTR, LPCWSTR*, int , LPCWSTR*, int, const Filte
        * Decodes a list of files.Information about decoded files are kept inside the encoded files
        * @param [in] sourceFile		Pointer to a list of source file paths 
 	   * @param [in] nSourceFiles	List size
+	   * @param [out] destFile		Path to output file
 	   * @return MMC_OK if all is ok
  ***********************************************/ 
 API_EXPORT int DecodeFiles(LPCWSTR* sourceFiles, int nSourceFiles, LPCWSTR destFile);
