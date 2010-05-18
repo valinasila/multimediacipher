@@ -388,7 +388,7 @@ int EncodeFile(LPCWSTR sourceFile, LPCWSTR* mediaFiles, int nMediaFiles, LPCWSTR
 	int offset = 0;
 	int j = 0;
 
-	ret = GetEncoderForFile(sourceFile,&encoder);
+	ret = GetEncoderForFile(*mediaFiles,&encoder);
 	if(MMC_OK != ret)
 		return ret;
 	encoderNode = GetEncoderNode(encoder);
@@ -692,11 +692,14 @@ int DecodeFiles(LPCWSTR* sourceFiles, int nSourceFiles,LPCWSTR destFile)
 }
 int GetEncoderForFile(LPCWSTR filePath, Encoder* encoder)
 {
+	// returns the encoder with the highest uid that has the same signature
 	EncodersNodePtr node;
 	Encoder	retEncoder = NULL;
 	unsigned char* buffer = NULL;
 	DWORD size = 0;
 	unsigned long long max_size = 0;
+	unsigned long long max_uid  = 0;
+	unsigned long long tmp_size = 0;
 	
 	EncoderSignaturePtr signature;
 
@@ -710,8 +713,9 @@ int GetEncoderForFile(LPCWSTR filePath, Encoder* encoder)
 	while(node)
 	{
 		signature = node->m_API.m_lpfnGetEncoderSignature();
-		if(max_size > ( signature->m_ulSignatureStartPos + signature->m_ulSignatureSize ) )
-			max_size = signature->m_ulSignatureStartPos + signature->m_ulSignatureSize;
+		tmp_size =  signature->m_ulSignatureStartPos + signature->m_ulSignatureSize;
+		if(max_size < tmp_size )
+			max_size = tmp_size;
 		node = node->m_pNext;
 	}
 	
@@ -724,8 +728,11 @@ int GetEncoderForFile(LPCWSTR filePath, Encoder* encoder)
 			signature = node->m_API.m_lpfnGetEncoderSignature();
 			if( 0 == memcmp(signature->m_Signature,buffer+signature->m_ulSignatureStartPos, (size_t) signature->m_ulSignatureSize) )
 			{
-				retEncoder = node->m_pEncoder;
-				break;
+				if( ((EncoderStructPtr)node->m_pEncoder)->m_ulUid > max_uid )
+				{
+					max_uid = ((EncoderStructPtr)node->m_pEncoder)->m_ulUid;
+					retEncoder = node->m_pEncoder;
+				}				
 			}
 			node = node->m_pNext;
 		}
