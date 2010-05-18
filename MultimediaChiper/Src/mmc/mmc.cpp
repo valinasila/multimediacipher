@@ -48,6 +48,7 @@ int RemoveHeadAction()
 {
 	mmcActionPtr node = actions;
 	encodeStructPtr tmpEncodeStruct = NULL;
+	decodeStructPtr tmpDecodeStruct = NULL;
 	unsigned int i = 0;
 	if(NULL != actions)
 	{		
@@ -89,8 +90,25 @@ int RemoveHeadAction()
 		}
 		else
 		{
-			if(NULL != actions->m_pTarget)
-				free(actions->m_pTarget);
+			if(MMC_OPT_DECODE == actions->opt)
+			{
+				tmpDecodeStruct = (decodeStructPtr) actions->m_pTarget;
+
+				if(NULL != tmpDecodeStruct->dstPath)
+					free(tmpDecodeStruct->dstPath);
+				
+				for(i = 0; i < tmpDecodeStruct->nMediaFiles; i++)
+					free(*(tmpDecodeStruct->mediaFiles + i));
+
+				if(NULL != tmpDecodeStruct->mediaFiles)
+					free(tmpDecodeStruct->mediaFiles);
+
+			}
+			else
+			{
+				if(NULL != actions->m_pTarget)
+					free(actions->m_pTarget);
+			}
 		}
 
 		actions = actions->m_pNext;
@@ -115,7 +133,7 @@ void ShowHelp()
 	wprintf(L"      filters  (alternate: -ef) ->prints all available filters\n");
 	wprintf(L"-get  [path]	 ->prints available encoder for specific file\n");
 	wprintf(L"-enc  (alternate: -encode) [path] /src [paths] /dst [paths] /flt [filters] -> encodes data stored in first path with src paths using filters provided by their uid and saves content in dest paths\n");
-	wprintf(L"-dec	(alternate: -decode) [paths] -> decodes files from paths\n");
+	wprintf(L"-dec	(alternate: -decode) [paths] /dst [path]  -> decodes files from paths\n");
 }
 
 void EnumEncoders()
@@ -200,12 +218,20 @@ void Encode(encodeStructPtr p)
 	wprintf(L"----------------------------------------------------------------------------\n\n");
 }
 
+void Decode(decodeStructPtr p)
+{
+	wprintf(L"----------------------------------------------------------------------------\n");
+	api_mmc.m_lpfnDecodeFiles(p->mediaFiles,p->nMediaFiles,p->dstPath);
+	wprintf(L"----------------------------------------------------------------------------\n\n");
+}
+
 int _tmain(int argc, _TCHAR* argv[])
 {
 	int i;
 	unsigned int j;
 	LPWSTR tmp = NULL;
 	encodeStructPtr tmpEncode = NULL;
+	decodeStructPtr tmpDecode = NULL;
 	
 	if( 0 != Init() )
 		return 1;
@@ -369,7 +395,29 @@ int _tmain(int argc, _TCHAR* argv[])
 		}
 		else if ( ( wcscmp(argv[i],L"-dec") == 0 ) || ( wcscmp(argv[i],L"-decode") == 0 ))
 		{
-			
+			if( (i + i) <argc )
+			{
+				i++;
+				while( ( i < argc) && ( wcscmp(argv[i],L"/dst") != 0 ) )
+				{
+					tmp = (LPWSTR) malloc(sizeof(WCHAR) * MAX_PATH);
+					*tmp = L'\0';
+					wcscat_s(tmp,MAX_PATH - 1, argv[i] );
+					tmpDecode->nMediaFiles++;					
+					tmpDecode->mediaFiles = (LPWSTR*) realloc(tmpDecode->mediaFiles, sizeof(LPWSTR) * tmpDecode->nMediaFiles );
+					*(tmpDecode->mediaFiles + (tmpDecode->nMediaFiles - 1) ) = tmp;  
+					i++;
+				}
+				if( (i + i) <argc )
+				{
+					i++;
+					tmp = (LPWSTR) malloc(sizeof(WCHAR) * MAX_PATH);
+					*tmp = L'\0';
+					wcscat_s(tmp,MAX_PATH - 1, argv[i] );
+					tmpDecode->dstPath = tmp;
+					AddAction(MMC_OPT_DECODE,tmpDecode);
+				}
+			}
 		}
 	}
 	
@@ -383,6 +431,7 @@ int _tmain(int argc, _TCHAR* argv[])
 		case MMC_OPT_ENUM_FILTERS: EnumFilters(); break;
 		case MMC_OPT_GET_ENCODER: GetEncForFile(actions->m_pTarget);
 		case MMC_OPT_ENCODE:	Encode(actions->m_pTarget);
+		case MMC_OPT_DECODE:	Decode(actions->m_pTarget);
 		default: break;
 		}
 		RemoveHeadAction();

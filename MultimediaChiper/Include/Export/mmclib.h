@@ -106,9 +106,9 @@ typedef int (*encodeFileFn) (LPCWSTR, LPCWSTR*, int , LPCWSTR*, int, const Filte
 	   * @param [in] nSourceFiles	List size
 	   * @return MMC_OK if all is ok
  ***********************************************/ 
-API_EXPORT int DecodeFiles(LPCWSTR* sourceFiles, int nSourceFiles);
+API_EXPORT int DecodeFiles(LPCWSTR* sourceFiles, int nSourceFiles, LPCWSTR destFile);
 /**	*@see DecodeFiles	*/
-typedef int (*decodeFilesFn) (LPCWSTR*, int);
+typedef int (*decodeFilesFn) (LPCWSTR*, int,LPCWSTR);
 
 
 /********************************************//**

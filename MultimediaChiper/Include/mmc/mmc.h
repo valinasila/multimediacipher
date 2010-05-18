@@ -39,6 +39,14 @@ struct _encodeStruct{
 	unsigned int			nOutFiles;
 };
 
+typedef struct _decodeStruct decodeStruct, *decodeStructPtr;
+struct _decodeStruct{
+	LPWSTR					dstPath;
+	LPWSTR*					mediaFiles;
+	unsigned int			nMediaFiles;
+};
+
+
 typedef struct _mmcAction mmcAction, *mmcActionPtr;
 struct _mmcAction {
 	MMCOption		opt;
