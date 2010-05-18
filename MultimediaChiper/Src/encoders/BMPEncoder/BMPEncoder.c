@@ -36,6 +36,8 @@ EncoderRet Init()
 	m_pSignature->m_ulSignatureSize = 2;
 	m_pSignature->m_ulSignatureStartPos = 0;
 
+	m_bFirstBuffer = TRUE;
+
 	return ENC_RET_OK;
 }
 Encoder GetEncoder()
@@ -70,10 +72,24 @@ EncoderRet SetAction(int bEncode)
 }
 EncoderRet SetSourceBuffer(const unsigned char* buffer, unsigned int bufferSize)
 {
+	if(NULL == sourceHandle)
+		return ENC_RET_WrongArgument;
+
+	pTmpApi->m_lpfnSaveTempBuffer(sourceHandle,buffer,bufferSize);
+	m_sourceBufferSize += (unsigned long long) bufferSize;
+
 	return ENC_RET_OK;
 }
 EncoderRet SetBuffer(const unsigned char* buffer, unsigned int bufferSize)
 {
+	if(m_bEncode)
+	{
+		// encode
+		if(m_bFirstBuffer)
+		{
+			m_bFirstBuffer = FALSE;
+		}
+	}
 	return ENC_RET_OK;
 }
 EncoderRet GetBuffer(unsigned char* buffer, unsigned int bufferSize,unsigned int* bytesWrote)
@@ -82,9 +98,20 @@ EncoderRet GetBuffer(unsigned char* buffer, unsigned int bufferSize,unsigned int
 }
 EncoderRet ReloadEncoder()
 {
+	pTmpApi->m_lpfnCloseTempHandle( sourceHandle);
+	pTmpApi->m_lpfnCloseTempHandle( envelopeHandle);
+	m_bFirstBuffer = TRUE;
+	m_sourceBufferSize = 0;
 	return ENC_RET_OK;
 }
 EncoderRet SetTempFn(TempHandlerAPIPtr api)
 {
+	pTmpApi = api; 
+
+	if(NULL == pTmpApi->m_lpfnGetTempHandle)
+		return ENC_RET_WrongArgument;
+
+	pTmpApi->m_lpfnGetTempHandle(&sourceHandle);
+	pTmpApi->m_lpfnGetTempHandle(&envelopeHandle);
 	return ENC_RET_OK;
 }
