@@ -26,3 +26,6 @@ int m_bFirstBuffer = TRUE;
 TempHandlerAPIPtr pTmpApi = NULL;
 TempHandle	sourceHandle = NULL;
 TempHandle	envelopeHandle = NULL;
+int m_bIsFirstSourceBuffer = TRUE;
+unsigned long long m_sourceBufferSize = 0;
+int m_bIsFirstDecodeBuffer = TRUE;
