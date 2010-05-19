@@ -42,7 +42,8 @@ typedef enum _encoderRet {
 	ENC_RET_WrongArgument		= -10,
 	ENC_RET_IsEncoder           = 17564,
 	ENC_RET_Wrong_File_Format   = -700,
-	ENC_RET_Insuficient_Size	= -701
+	ENC_RET_Insuficient_Size	= -701,
+	ENC_RET_Not_Implemented     = -702
 } EncoderRet;
 
 

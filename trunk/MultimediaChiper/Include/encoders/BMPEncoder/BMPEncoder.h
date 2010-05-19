@@ -41,6 +41,17 @@ struct _bmpStruct{
 
 bmpStruct fileStruct;
 
+unsigned int offset = 0;
+unsigned char* tempBuffer = NULL;
+int			   tempBufferSize = 0;
+
+unsigned int sourceOffset = 0;
+unsigned char* sourceBuffer = NULL;
+int				sourceBufferSize = 0;
+unsigned char	bitOffset = 0;
+
+
+#define DEFAULT_BUFFER_SIZE  2048
 /*
 ************************************************
 	BMP file format
