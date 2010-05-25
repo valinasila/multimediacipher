@@ -173,6 +173,8 @@ EncoderRet SetBuffer(const unsigned char* buffer, unsigned int bufferSize)
 				if( (sourceBufferSize == 0) ||  (sourceOffset > sourceBufferSize) )
 				{
 					pTmpApi->m_lpfnGetTempBuffer(sourceHandle,sourceBuffer,DEFAULT_BUFFER_SIZE,&sourceBufferSize);
+					if(sourceBufferSize <= 0)
+						break;
 					sourceOffset = 0;
 					bitOffset = 0;
 				}
