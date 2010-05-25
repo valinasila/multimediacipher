@@ -117,8 +117,8 @@ int RemoveHeadAction()
 	return 0;
 }
 
-//-dec d:\cod\mmc\Bin\VS9\Debug\PlayGround\output.bmp /dst d:\cod\mmc\Bin\VS9\Debug\PlayGround\output.txt -kb
-//-kb -enc d:\cod\mmc\Bin\VS9\Debug\PlayGround\text.txt /src d:\cod\mmc\Bin\VS9\Debug\PlayGround\test.bmp /dst d:\cod\mmc\Bin\VS9\Debug\PlayGround\output.bmp /flt 1
+//-dec d:\cod\MmC\MultimediaChiper\Bin\VS9\Debug\PlayGround\output.bmp /dst d:\cod\MmC\MultimediaChiper\Bin\VS9\Debug\PlayGround\output.txt -kb
+//-kb -enc d:\cod\MmC\MultimediaChiper\Bin\VS9\Debug\PlayGround\text.txt /src d:\cod\MmC\MultimediaChiper\Bin\VS9\Debug\PlayGround\test.bmp /dst d:\cod\MmC\MultimediaChiper\Bin\VS9\Debug\PlayGround\output.bmp /flt 1
 
 void ShowHelp()
 {
@@ -434,9 +434,9 @@ int _tmain(int argc, _TCHAR* argv[])
 		case MMC_OPT_HELP:	ShowHelp(); break;	
 		case MMC_OPT_ENUM_ENCODER: EnumEncoders(); break;
 		case MMC_OPT_ENUM_FILTERS: EnumFilters(); break;
-		case MMC_OPT_GET_ENCODER: GetEncForFile(actions->m_pTarget);
-		case MMC_OPT_ENCODE:	Encode(actions->m_pTarget);
-		case MMC_OPT_DECODE:	Decode(actions->m_pTarget);
+		case MMC_OPT_GET_ENCODER: GetEncForFile(actions->m_pTarget); break;
+		case MMC_OPT_ENCODE:	Encode(actions->m_pTarget); break;
+		case MMC_OPT_DECODE:	Decode(actions->m_pTarget); break;
 		default: break;
 		}
 		RemoveHeadAction();

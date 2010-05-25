@@ -500,6 +500,7 @@ int EncodeFile(LPCWSTR sourceFile, LPCWSTR* mediaFiles, int nMediaFiles, LPCWSTR
 	hWrite = CreateFile(*destFiles,GENERIC_WRITE,FILE_SHARE_READ,NULL,OPEN_ALWAYS,FILE_ATTRIBUTE_NORMAL,NULL);
 	if(INVALID_HANDLE_VALUE == hWrite)
 	{
+		DWORD dwret = GetLastError();
 		CloseHandle(hFile);
 		return MMC_READ_FILE_ERROR;
 	}
